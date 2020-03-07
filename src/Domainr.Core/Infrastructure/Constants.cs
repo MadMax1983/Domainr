@@ -2,6 +2,6 @@
 {
     public static class Constants
     {
-        public const long DEFAULT_VERSION = -1;
+        public const long INITIAL_VERSION = -1;
     }
 }

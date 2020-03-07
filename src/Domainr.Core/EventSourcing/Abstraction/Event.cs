@@ -23,7 +23,7 @@ namespace Domainr.Core.EventSourcing.Abstraction
         {
             AggregateRootId = aggregateRootId;
 
-            Version = Constants.DEFAULT_VERSION;
+            Version = Constants.INITIAL_VERSION;
         }
 
         public string AggregateRootId { get; }
@@ -32,7 +32,7 @@ namespace Domainr.Core.EventSourcing.Abstraction
 
         internal void IncrementVersion(ref long aggregateRootVersion)
         {
-            if (aggregateRootVersion < Constants.DEFAULT_VERSION)
+            if (aggregateRootVersion < Constants.INITIAL_VERSION)
             {
                 // TODO: Create custom exception for aggregate root version
                 throw new Exception();
