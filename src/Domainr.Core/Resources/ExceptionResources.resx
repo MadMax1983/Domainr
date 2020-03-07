@@ -129,6 +129,9 @@
   <data name="EmptyAggregateRootEventStream" xml:space="preserve">
     <value>Aggregate root events stream is empty.</value>
   </data>
+  <data name="EmptyAggregateRootId" xml:space="preserve">
+    <value>Aggregate root identifier cannot be null or empty string.</value>
+  </data>
   <data name="InvalidConflictEventTypes" xml:space="preserve">
     <value>All conflicts with type must be of type {0}.</value>
   </data>

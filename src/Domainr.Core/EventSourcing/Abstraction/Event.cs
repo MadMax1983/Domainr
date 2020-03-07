@@ -1,6 +1,8 @@
 ﻿using System;
 using Domainr.Core.Domain.Model;
+using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
+using Domainr.Core.Resources;
 
 namespace Domainr.Core.EventSourcing.Abstraction
 {
@@ -13,6 +15,7 @@ namespace Domainr.Core.EventSourcing.Abstraction
 
         protected Event()
         {
+            Version = Constants.INITIAL_VERSION;
         }
 
         /// <summary>
@@ -21,10 +24,14 @@ namespace Domainr.Core.EventSourcing.Abstraction
         /// <param name="aggregateRootId"></param>
 
         protected Event(string aggregateRootId)
+            : this()
         {
-            AggregateRootId = aggregateRootId;
+            if (string.IsNullOrWhiteSpace(aggregateRootId))
+            {
+                throw new AggregateRootIdException(ExceptionResources.EmptyAggregateRootId);
+            }
 
-            Version = Constants.INITIAL_VERSION;
+            AggregateRootId = aggregateRootId;
         }
 
         public string AggregateRootId { get; }

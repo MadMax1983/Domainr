@@ -97,6 +97,15 @@ namespace Domainr.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aggregate root identifier cannot be null or empty string..
+        /// </summary>
+        internal static string EmptyAggregateRootId {
+            get {
+                return ResourceManager.GetString("EmptyAggregateRootId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All conflicts with type must be of type {0}..
         /// </summary>
         internal static string InvalidConflictEventTypes {
