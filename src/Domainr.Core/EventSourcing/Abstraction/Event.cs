@@ -1,5 +1,7 @@
 ﻿using System;
+using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
+using Domainr.Core.Resources;
 
 namespace Domainr.Core.EventSourcing.Abstraction
 {
@@ -34,8 +36,7 @@ namespace Domainr.Core.EventSourcing.Abstraction
         {
             if (aggregateRootVersion < Constants.INITIAL_VERSION)
             {
-                // TODO: Create custom exception for aggregate root version
-                throw new Exception();
+                throw new AggregateRootVersionException(string.Format(ExceptionResources.AggregateRootVersionIsInvalid, aggregateRootVersion, Constants.INITIAL_VERSION));
             }
 
             Version = ++aggregateRootVersion;
