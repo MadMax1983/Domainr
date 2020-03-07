@@ -1,7 +1,6 @@
 ﻿using System;
-using Domainr.Core.Exceptions;
+using Domainr.Core.Domain.Model;
 using Domainr.Core.Infrastructure;
-using Domainr.Core.Resources;
 
 namespace Domainr.Core.EventSourcing.Abstraction
 {
@@ -34,10 +33,7 @@ namespace Domainr.Core.EventSourcing.Abstraction
 
         internal void IncrementVersion(ref long aggregateRootVersion)
         {
-            if (aggregateRootVersion < Constants.INITIAL_VERSION)
-            {
-                throw new AggregateRootVersionException(string.Format(ExceptionResources.AggregateRootVersionIsInvalid, aggregateRootVersion, Constants.INITIAL_VERSION));
-            }
+            AggregateRootVersionValidator.Validate(aggregateRootVersion);
 
             Version = ++aggregateRootVersion;
         }
