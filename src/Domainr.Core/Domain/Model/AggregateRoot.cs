@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Domainr.Core.EventSourcing.Abstraction;
@@ -36,6 +37,11 @@ namespace Domainr.Core.Domain.Model
 
             protected set
             {
+                if (value == null)
+                {
+                    throw new AggregateRootIdException(ExceptionResources.NullAggregateRootId);
+                }
+
                 if (_aggregateRootId != null)
                 {
                     throw new AggregateRootIdException(ExceptionResources.CannotChangeAggregateRootId);
@@ -155,7 +161,19 @@ namespace Domainr.Core.Domain.Model
         {
             var onMethod = _onMethods.Single(hm => hm.GetParameters().Single().ParameterType == @event.GetType());
 
-            onMethod.Invoke(this, new object[] { @event });
+            try
+            {
+                onMethod.Invoke(this, new object[] { @event });
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException == null)
+                {
+                    throw;
+                }
+
+                throw ex.InnerException;
+            }
         }
 
         private long SetCurrentVersion(long currentAggregateRootVersion)

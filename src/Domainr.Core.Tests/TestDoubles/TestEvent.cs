@@ -11,9 +11,12 @@ namespace Domainr.Core.Tests.TestDoubles
         }
 
         /// <inheritdoc/>
-        public TestEvent(string aggregateRootId)
+        public TestEvent(string aggregateRootId, bool initializeAggregateRootId)
             : base(aggregateRootId)
         {
+            InitializeAggregateRootId = initializeAggregateRootId;
         }
+
+        public bool InitializeAggregateRootId { get; }
     }
 }

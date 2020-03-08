@@ -141,4 +141,7 @@
   <data name="NoEventsToCommit" xml:space="preserve">
     <value>A concurrency was found while saving aggregate root changes. Aggregate root identifier: {0}, version: {1}.</value>
   </data>
+  <data name="NullAggregateRootId" xml:space="preserve">
+    <value>Aggregate root identifier cannot be null.</value>
+  </data>
 </root>

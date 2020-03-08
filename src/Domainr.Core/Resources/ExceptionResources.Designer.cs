@@ -131,5 +131,14 @@ namespace Domainr.Core.Resources {
                 return ResourceManager.GetString("NoEventsToCommit", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aggregate root identifier cannot be null..
+        /// </summary>
+        internal static string NullAggregateRootId {
+            get {
+                return ResourceManager.GetString("NullAggregateRootId", resourceCulture);
+            }
+        }
     }
 }
