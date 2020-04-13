@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core", "Domainr.Core\Domainr.Core.csproj", "{95248EC4-A146-4CCD-8D2F-997EAE8535BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.Core.Tests", "Domainr.Core.Tests\Domainr.Core.Tests.csproj", "{0D39DDAE-4E1A-403B-9462-C9701856119F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core.Tests", "Domainr.Core.Tests\Domainr.Core.Tests.csproj", "{0D39DDAE-4E1A-403B-9462-C9701856119F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

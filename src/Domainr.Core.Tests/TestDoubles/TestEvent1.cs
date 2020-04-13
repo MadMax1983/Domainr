@@ -2,16 +2,16 @@
 
 namespace Domainr.Core.Tests.TestDoubles
 {
-    internal sealed class TestEvent
+    internal sealed class TestEvent1
         : Event
     {
         /// <inheritdoc/>
-        public TestEvent()
+        public TestEvent1()
         {
         }
 
         /// <inheritdoc/>
-        public TestEvent(string aggregateRootId, bool initializeAggregateRootId)
+        public TestEvent1(string aggregateRootId, bool initializeAggregateRootId)
             : base(aggregateRootId)
         {
             InitializeAggregateRootId = initializeAggregateRootId;

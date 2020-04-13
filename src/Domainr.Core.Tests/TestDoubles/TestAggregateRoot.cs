@@ -8,14 +8,23 @@ namespace Domainr.Core.Tests.TestDoubles
 
         public void InitializeId(string aggregateRootId, bool initializeAggregateRootId)
         {
-            ApplyChange(new TestEvent(aggregateRootId, initializeAggregateRootId));
+            ApplyChange(new TestEvent1(aggregateRootId, initializeAggregateRootId));
         }
 
-        private void On(TestEvent @event)
+        public void ExecuteSomeAction()
+        {
+            ApplyChange(new TestEvent2(Id.ToString()));
+        }
+
+        private void On(TestEvent1 @event)
         {
             Id = @event.InitializeAggregateRootId
                 ? new TestAggregateRootId(@event.AggregateRootId)
                 : null;
+        }
+
+        private void On(TestEvent2 @event)
+        {
         }
     }
 }
