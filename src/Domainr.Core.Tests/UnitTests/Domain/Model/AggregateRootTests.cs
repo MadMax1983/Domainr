@@ -214,6 +214,26 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
         }
 
         [Test]
+        public void GIVEN_invalid_aggregate_root_version_WHEN_commiting_changes_THEN_throws_AggregateRootVersionException()
+        {
+            // Arrange
+            const int AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK = -2;
+
+            var aggregateRoot = new TestAggregateRoot();
+
+            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
+
+            // Act
+            var action = aggregateRoot.Invoking(ar => ar.CommitChanges(AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK));
+
+            // Assert
+            action
+                .Should()
+                .Throw<AggregateRootVersionException>()
+                .WithMessage(string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK));
+        }
+
+        [Test]
         public void GIVEN_aggregate_root_with_uncommitted_changes_WHEN_commiting_changes_THEN_sets_correct_aggregate_root_version()
         {
             // Arrange
@@ -280,26 +300,6 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             aggregateRoot.Version
                 .Should()
                 .Be(EXPECTED_VERSION);
-        }
-
-        [Test]
-        public void GIVEN_invalid_aggregate_root_version_WHEN_commiting_changes_after_concurrency_check_THEN_throws_AggregateRootException()
-        {
-            // Arrange
-            const int AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK = -2;
-
-            var aggregateRoot = new TestAggregateRoot();
-
-            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
-
-            // Act
-            var action = aggregateRoot.Invoking(ar => ar.CommitChanges(AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK));
-
-            // Assert
-            action
-                .Should()
-                .Throw<AggregateRootException>()
-                .WithMessage("");
         }
     }
 }
