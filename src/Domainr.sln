@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core", "Domainr.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core.Tests", "Domainr.Core.Tests\Domainr.Core.Tests.csproj", "{0D39DDAE-4E1A-403B-9462-C9701856119F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.SqlServer", "Domainr.EventStore.SqlServer\Domainr.EventStore.SqlServer.csproj", "{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.SqlServer.Tests", "Domainr.EventStore.SqlServer.Tests\Domainr.EventStore.SqlServer.Tests.csproj", "{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.SqlServer.Cmd", "Domainr.EventStore.SqlServer.Cmd\Domainr.EventStore.SqlServer.Cmd.csproj", "{0B668C45-6465-431D-8992-00A6417A0E6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{0D39DDAE-4E1A-403B-9462-C9701856119F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D39DDAE-4E1A-403B-9462-C9701856119F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D39DDAE-4E1A-403B-9462-C9701856119F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
