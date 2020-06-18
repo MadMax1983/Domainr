@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "Domainr.Manager.Grpc";
+
+package DomainrEndpoints;
+
+service Endpoints {
+    rpc AddEndpoint (AddEndpointRequest) returns (AddEndpointResponse);
+}
+
+message AddEndpointRequest {
+    string id = 1;
+    string url = 2;
+    string authEndpointUrl = 3;
+    string clientKey = 4;
+    string clientSecret = 5;
+}
+
+message AddEndpointResponse {
+}

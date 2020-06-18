@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "Domainr.Manager.Grpc";
+
+package DomainrEndpoints;
+
+service Events {
+	rpc GetEvents (GetEventsRequest) returns (GetEventsResponse);
+}
+
+message GetEventsRequest {
+	string url = 1;
+	string authEndpointUrl = 2;
+	string clientKey = 3;
+	string clientSecret = 4;
+}
+
+message GetEventsResponse {
+	string id = 1;
+	string eventType = 2;
+	string 
+}
