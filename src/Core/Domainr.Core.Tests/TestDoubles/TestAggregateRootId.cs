@@ -11,5 +11,10 @@ namespace Domainr.Core.Tests.TestDoubles
         {
             _value = value;
         }
+
+        public override string ToString()
+        {
+            return _value;
+        }
     }
 }
