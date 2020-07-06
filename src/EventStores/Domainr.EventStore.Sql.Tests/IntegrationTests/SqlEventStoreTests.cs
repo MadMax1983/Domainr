@@ -29,13 +29,13 @@ namespace Domainr.EventStore.Sql.Tests.IntegrationTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var jsonString = "{ Id: \"_id\", Version: \"10\" }";
-
-            var @event = (TestEvent)JsonConvert.DeserializeObject(jsonString,  Type.GetType("Domainr.EventStore.Sql.Tests.Doubles.TestEvent"));
+            // var jsonString = "{ Id: \"_id\", Version: \"10\" }";
+            //
+            // var @event = (TestEvent)JsonConvert.DeserializeObject(jsonString,  Type.GetType("Domainr.EventStore.Sql.Tests.Doubles.TestEvent"));
 
             _mockSqlStatementsLoader
                 .Setup(m => m[It.IsAny<string>()])
-                .Returns("SELECT '_id' AS [Id], 10 AS [Version], 'AggregateRootId' AS [AggregateRootId] 'arid' AS [AggregateRootId], '{ Id: \"_id\", Version: \"10\" }' AS [Data]");
+                .Returns("SELECT '_id' AS [Id], 10 AS [Version], 'AggregateRootId' AS [AggregateRootId], 'arid' AS [AggregateRootId], '{ Id: \"_id\", Version: \"10\" }' AS [Data]");
         }
 
         [Test]

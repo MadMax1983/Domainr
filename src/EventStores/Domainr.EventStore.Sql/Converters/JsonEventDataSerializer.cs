@@ -2,7 +2,7 @@
 using Domainr.Core.EventSourcing.Abstraction;
 using Newtonsoft.Json;
 
-namespace Domainr.EventStore.Sql.Infrastructure
+namespace Domainr.EventStore.Sql.Converters
 {
     public class JsonEventDataSerializer
         : IEventDataSerializer<string>
@@ -17,7 +17,7 @@ namespace Domainr.EventStore.Sql.Infrastructure
 
         public Event Deserialize(string jsonString, string type)
         {
-            var @event = (Event) JsonConvert.DeserializeObject(jsonString, Type.GetType(type));
+            var @event = (Event) JsonConvert.DeserializeObject(jsonString, Type.GetType(type) ?? typeof(Event));
 
             return @event;
         }
