@@ -3,9 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core", "Domainr.Core\Domainr.Core.csproj", "{95248EC4-A146-4CCD-8D2F-997EAE8535BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core", "Core\Domainr.Core\Domainr.Core.csproj", "{95248EC4-A146-4CCD-8D2F-997EAE8535BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core.Tests", "Domainr.Core.Tests\Domainr.Core.Tests.csproj", "{0D39DDAE-4E1A-403B-9462-C9701856119F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Core.Tests", "Core\Domainr.Core.Tests\Domainr.Core.Tests.csproj", "{0D39DDAE-4E1A-403B-9462-C9701856119F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer", "EventStores\Domainr.EventStore.SqlServer\Domainr.EventStore.SqlServer.csproj", "{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer.Tests", "EventStores\Domainr.EventStore.SqlServer.Tests\Domainr.EventStore.SqlServer.Tests.csproj", "{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer.Cmd", "EventStores\Domainr.EventStore.SqlServer.Cmd\Domainr.EventStore.SqlServer.Cmd.csproj", "{0B668C45-6465-431D-8992-00A6417A0E6B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Postgresql", "EventStores\Domainr.EventStore.Postgresql\Domainr.EventStore.Postgresql.csproj", "{14270B79-EA2A-427D-AB07-480F91E6375D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.MySql", "EventStores\Domainr.EventStore.MySql\Domainr.EventStore.MySql.csproj", "{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Oracle", "EventStores\Domainr.EventStore.Oracle\Domainr.EventStore.Oracle.csproj", "{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sql", "EventStores\Domainr.EventStore.Sql\Domainr.EventStore.Sql.csproj", "{5D05E06F-350C-4BC1-96E9-D7E73694AB92}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventStores", "EventStores", "{6253653F-45FE-4E57-A99A-E6B263F1072B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{31F4469A-468D-44B0-B298-2CA1223069A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +39,48 @@ Global
 		{0D39DDAE-4E1A-403B-9462-C9701856119F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D39DDAE-4E1A-403B-9462-C9701856119F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D39DDAE-4E1A-403B-9462-C9701856119F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B668C45-6465-431D-8992-00A6417A0E6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14270B79-EA2A-427D-AB07-480F91E6375D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14270B79-EA2A-427D-AB07-480F91E6375D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14270B79-EA2A-427D-AB07-480F91E6375D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14270B79-EA2A-427D-AB07-480F91E6375D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{95248EC4-A146-4CCD-8D2F-997EAE8535BB} = {31F4469A-468D-44B0-B298-2CA1223069A4}
+		{0D39DDAE-4E1A-403B-9462-C9701856119F} = {31F4469A-468D-44B0-B298-2CA1223069A4}
+		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC} = {6253653F-45FE-4E57-A99A-E6B263F1072B}
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91} = {6253653F-45FE-4E57-A99A-E6B263F1072B}
+		{0B668C45-6465-431D-8992-00A6417A0E6B} = {6253653F-45FE-4E57-A99A-E6B263F1072B}
+		{14270B79-EA2A-427D-AB07-480F91E6375D} = {6253653F-45FE-4E57-A99A-E6B263F1072B}
+		{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1} = {6253653F-45FE-4E57-A99A-E6B263F1072B}
+		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67} = {6253653F-45FE-4E57-A99A-E6B263F1072B}
+		{5D05E06F-350C-4BC1-96E9-D7E73694AB92} = {6253653F-45FE-4E57-A99A-E6B263F1072B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6076CB8-19C1-4078-A9EB-BDB27C8957AC}
