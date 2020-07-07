@@ -1,7 +1,7 @@
 ﻿using System.Data;
+using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
-using Domainr.EventStore.Sql.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 

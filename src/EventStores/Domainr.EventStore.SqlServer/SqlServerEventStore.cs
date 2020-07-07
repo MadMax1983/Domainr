@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
-using Domainr.EventStore.Sql.Infrastructure;
 using Microsoft.Extensions.Logging;
 
 namespace Domainr.EventStore

@@ -17,6 +17,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Oracle",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sql", "Domainr.EventStore.Sql\Domainr.EventStore.Sql.csproj", "{5D05E06F-350C-4BC1-96E9-D7E73694AB92}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F9A7471-2909-4BDC-BA68-9AEB829975D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.Serializers", "Domainr.EventStore.Serializers\Domainr.EventStore.Serializers.csproj", "{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Serializers", "Serializers", "{235E0125-2359-4705-B8E5-D556AE399F3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.Serializers.Json", "Domainr.EventStore.Serializers.Json\Domainr.EventStore.Serializers.Json.csproj", "{55C4976D-3B13-4CA7-B255-C31955664430}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.Serializers.ByteArray", "Domainr.EventStore.Serializers.ByteArray\Domainr.EventStore.Serializers.ByteArray.csproj", "{B6352A3C-00D1-46DB-9B12-AA0663A86954}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{706AE003-78E4-4767-B75A-F853B25AE797}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,9 +63,28 @@ Global
 		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55C4976D-3B13-4CA7-B255-C31955664430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55C4976D-3B13-4CA7-B255-C31955664430}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55C4976D-3B13-4CA7-B255-C31955664430}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55C4976D-3B13-4CA7-B255-C31955664430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91} = {5F9A7471-2909-4BDC-BA68-9AEB829975D8}
+		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63} = {235E0125-2359-4705-B8E5-D556AE399F3B}
+		{55C4976D-3B13-4CA7-B255-C31955664430} = {235E0125-2359-4705-B8E5-D556AE399F3B}
+		{B6352A3C-00D1-46DB-9B12-AA0663A86954} = {235E0125-2359-4705-B8E5-D556AE399F3B}
+		{706AE003-78E4-4767-B75A-F853B25AE797} = {235E0125-2359-4705-B8E5-D556AE399F3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6076CB8-19C1-4078-A9EB-BDB27C8957AC}

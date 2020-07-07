@@ -9,20 +9,20 @@ namespace Domainr.Core.EventSourcing.Abstraction
     [Serializable]
     public abstract class Event
     {
+        private long _version;
+
         /// <summary>
         /// Use this constructor only for deserialization form an event store.
         /// </summary>
-
         protected Event()
         {
-            Version = Constants.INITIAL_VERSION;
+            _version = Constants.INITIAL_VERSION;
         }
 
         /// <summary>
         /// Use this constructor only for creation of a new event.
         /// </summary>
         /// <param name="aggregateRootId"></param>
-
         protected Event(string aggregateRootId)
             : this()
         {
@@ -36,13 +36,13 @@ namespace Domainr.Core.EventSourcing.Abstraction
 
         public string AggregateRootId { get; }
 
-        public long Version { get; private set; }
+        public long Version => _version;
 
         internal void IncrementVersion(ref long aggregateRootVersion)
         {
             AggregateRootVersionValidator.Validate(aggregateRootVersion);
 
-            Version = ++aggregateRootVersion;
+            _version = ++aggregateRootVersion;
         }
     }
 }

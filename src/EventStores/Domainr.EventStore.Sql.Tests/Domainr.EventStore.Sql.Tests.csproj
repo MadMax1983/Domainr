@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.5" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="3.1.5" />
     <PackageReference Include="Moq" Version="4.14.4" />
@@ -16,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domainr.EventStore.Serializers.Json\Domainr.EventStore.Serializers.Json.csproj" />
     <ProjectReference Include="..\Domainr.EventStore.Sql\Domainr.EventStore.Sql.csproj" />
   </ItemGroup>
 

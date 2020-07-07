@@ -1,8 +1,8 @@
 ﻿using System.Data;
+using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
-using Domainr.EventStore.Sql.Converters;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 
