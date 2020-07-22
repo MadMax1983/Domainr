@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using Domainr.Core.EventSourcing.Abstraction;
+using Newtonsoft.Json;
 
 namespace Domainr.EventStore.Sql.Tests.Doubles
 {
@@ -7,17 +9,26 @@ namespace Domainr.EventStore.Sql.Tests.Doubles
     internal sealed class TestEvent
         : Event
     {
-        private readonly long _versionField = -1;
-
         public TestEvent()
         {
         }
 
-        public TestEvent(string aggregateRootId)
+        [JsonConstructor]
+        public TestEvent(string aggregateRootId, string stringProp)
             : base(aggregateRootId)
         {
+            StringProp = stringProp;
         }
 
-        public long VersionField => _versionField;
+        public string StringProp { get; }
+
+        public void SetVersion(long version)
+        {
+            var versionField = typeof(Event).GetField("_version", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (versionField != null)
+            {
+                versionField.SetValue(this, version);
+            }
+        }
     }
 }

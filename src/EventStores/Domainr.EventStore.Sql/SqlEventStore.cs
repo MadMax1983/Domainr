@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -18,28 +19,28 @@ namespace Domainr.EventStore.Sql
         : IEventStore,
           IEventStoreInitializer
     {
-        private readonly ILogger<SqlEventStore<TSerializationType>> _logger;
-
-        private readonly EventStoreSettings _settings;
-
-        private readonly ISqlStatementsLoader _sqlStatementsLoader;
-
-        private readonly IEventDataSerializer<TSerializationType> _eventDataSerializer;
-
         protected SqlEventStore(
             ILogger<SqlEventStore<TSerializationType>> logger,
             EventStoreSettings settings,
             ISqlStatementsLoader sqlStatementsLoader,
             IEventDataSerializer<TSerializationType> eventDataSerializer)
         {
-            _logger = logger;
+            Logger = logger;
 
-            _settings = settings;
+            Settings = settings;
 
-            _sqlStatementsLoader = sqlStatementsLoader;
+            SqlStatementsLoader = sqlStatementsLoader;
 
-            _eventDataSerializer = eventDataSerializer;
+            EventDataSerializer = eventDataSerializer;
         }
+
+        public ILogger<SqlEventStore<TSerializationType>> Logger { get; }
+
+        public EventStoreSettings Settings { get; }
+
+        public ISqlStatementsLoader SqlStatementsLoader { get; }
+
+        public IEventDataSerializer<TSerializationType> EventDataSerializer { get; }
 
         public virtual async Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion = Constants.INITIAL_VERSION)
         {
@@ -50,13 +51,13 @@ namespace Domainr.EventStore.Sql
                 @params.Add("@AggregateRootId", aggregateRootId);
                 @params.Add("@FromVersion", fromVersion);
 
-                var sql = _sqlStatementsLoader[nameof(GetByAggregateRootIdAsync)];
+                var sql = SqlStatementsLoader[nameof(GetByAggregateRootIdAsync)];
 
                 var eventEntities =
                     await connection.QueryAsync<EventEntity<TSerializationType>>(sql, @params, transaction);
 
                 var events = eventEntities
-                    .Select(eventEntity => _eventDataSerializer.Deserialize(eventEntity.Data, eventEntity.Type))
+                    .Select(eventEntity => EventDataSerializer.Deserialize(eventEntity.Data, eventEntity.Type))
                     .ToList();
 
                 return events;
@@ -76,9 +77,10 @@ namespace Domainr.EventStore.Sql
                     @params.Add("@Id", Uuid.Create().ToString());
                     @params.Add("@Version", @event.Version);
                     @params.Add("@AggregateRootId", @event.AggregateRootId);
-                    @params.Add("@Data", _eventDataSerializer.Serialize(@event));
+                    @params.Add("@Type", @event.GetType().AssemblyQualifiedName);
+                    @params.Add("@Data", EventDataSerializer.Serialize(@event));
 
-                    result += await connection.ExecuteAsync(_sqlStatementsLoader[nameof(SaveAsync)], @params, transaction);
+                    result += await connection.ExecuteAsync(SqlStatementsLoader[nameof(SaveAsync)], @params, transaction);
                 }
 
                 return result;
@@ -87,19 +89,18 @@ namespace Domainr.EventStore.Sql
 
         public virtual Task InitializeAsync()
         {
-            return ExecuteSqlStatement(async (connection, transaction) =>
-                await connection.ExecuteAsync(_sqlStatementsLoader[nameof(InitializeAsync)], transaction: transaction));
+            return ExecuteSqlStatement(async (connection, transaction) => await connection.ExecuteAsync(SqlStatementsLoader[nameof(InitializeAsync)], transaction: transaction));
         }
 
-        protected virtual async Task<TResult> ExecuteSqlStatement<TResult>(Func<IDbConnection, IDbTransaction, Task<TResult>> sqlFuncAsync)
+        protected virtual async Task<TResult> ExecuteSqlStatement<TResult>(Func<DbConnection, IDbTransaction, Task<TResult>> sqlFuncAsync)
         {
-            var connection = CreateConnection(_settings.ConnectionStrings["EventStore"]);
+            var connection = CreateConnection(Settings.ConnectionStrings["EventStore"]);
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
 
-            var transaction = connection.BeginTransaction();
+            var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
 
             try
             {
@@ -113,7 +114,7 @@ namespace Domainr.EventStore.Sql
             {
                 transaction.Rollback();
 
-                _logger.LogError(ex.Message, ex);
+                Logger.LogError(ex.Message, ex);
 
                 throw;
             }
@@ -124,6 +125,6 @@ namespace Domainr.EventStore.Sql
             }
         }
 
-        protected abstract IDbConnection CreateConnection(string connectionString);
+        protected abstract DbConnection CreateConnection(string connectionString);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Data;
+﻿using System.Data.Common;
 using System.Data.SqlClient;
 using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql;
@@ -20,7 +20,7 @@ namespace Domainr.EventStore
         {
         }
 
-        protected override IDbConnection CreateConnection(string connectionString)
+        protected override DbConnection CreateConnection(string connectionString)
         {
             return new SqlConnection(connectionString);
         }

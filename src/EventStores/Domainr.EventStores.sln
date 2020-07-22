@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer", "Domainr.EventStore.SqlServer\Domainr.EventStore.SqlServer.csproj", "{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sql.Tests", "Domainr.EventStore.Sql.Tests\Domainr.EventStore.Sql.Tests.csproj", "{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer.Cmd", "Domainr.EventStore.SqlServer.Cmd\Domainr.EventStore.SqlServer.Cmd.csproj", "{0B668C45-6465-431D-8992-00A6417A0E6B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Postgresql", "Domainr.EventStore.Postgresql\Domainr.EventStore.Postgresql.csproj", "{14270B79-EA2A-427D-AB07-480F91E6375D}"
@@ -19,15 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sql", "D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F9A7471-2909-4BDC-BA68-9AEB829975D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.Serializers", "Domainr.EventStore.Serializers\Domainr.EventStore.Serializers.csproj", "{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Serializers", "Domainr.EventStore.Serializers\Domainr.EventStore.Serializers.csproj", "{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Serializers", "Serializers", "{235E0125-2359-4705-B8E5-D556AE399F3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Serializers.Tests", "Domainr.EventStore.Serializers.Tests\Domainr.EventStore.Serializers.Tests.csproj", "{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.Serializers.Json", "Domainr.EventStore.Serializers.Json\Domainr.EventStore.Serializers.Json.csproj", "{55C4976D-3B13-4CA7-B255-C31955664430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sqlite", "Domainr.EventStore.Sqlite\Domainr.EventStore.Sqlite.csproj", "{60ABEB1F-2527-4C45-87C7-D6AA5F2955DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.EventStore.Serializers.ByteArray", "Domainr.EventStore.Serializers.ByteArray\Domainr.EventStore.Serializers.ByteArray.csproj", "{B6352A3C-00D1-46DB-9B12-AA0663A86954}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer.Tests", "Domainr.EventStore.SqlServer.Tests\Domainr.EventStore.SqlServer.Tests.csproj", "{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{706AE003-78E4-4767-B75A-F853B25AE797}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sql.Tests", "Domainr.EventStore.Sql.Tests\Domainr.EventStore.Sql.Tests.csproj", "{55877F0D-C094-411F-8BCF-48E66E40CE81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +37,6 @@ Global
 		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B668C45-6465-431D-8992-00A6417A0E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,24 +61,30 @@ Global
 		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55C4976D-3B13-4CA7-B255-C31955664430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55C4976D-3B13-4CA7-B255-C31955664430}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55C4976D-3B13-4CA7-B255-C31955664430}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55C4976D-3B13-4CA7-B255-C31955664430}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6352A3C-00D1-46DB-9B12-AA0663A86954}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60ABEB1F-2527-4C45-87C7-D6AA5F2955DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60ABEB1F-2527-4C45-87C7-D6AA5F2955DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60ABEB1F-2527-4C45-87C7-D6AA5F2955DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60ABEB1F-2527-4C45-87C7-D6AA5F2955DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55877F0D-C094-411F-8BCF-48E66E40CE81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55877F0D-C094-411F-8BCF-48E66E40CE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55877F0D-C094-411F-8BCF-48E66E40CE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55877F0D-C094-411F-8BCF-48E66E40CE81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D63038CF-CF85-48C9-95F3-E34DE3ED7F91} = {5F9A7471-2909-4BDC-BA68-9AEB829975D8}
-		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63} = {235E0125-2359-4705-B8E5-D556AE399F3B}
-		{55C4976D-3B13-4CA7-B255-C31955664430} = {235E0125-2359-4705-B8E5-D556AE399F3B}
-		{B6352A3C-00D1-46DB-9B12-AA0663A86954} = {235E0125-2359-4705-B8E5-D556AE399F3B}
-		{706AE003-78E4-4767-B75A-F853B25AE797} = {235E0125-2359-4705-B8E5-D556AE399F3B}
+		{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7} = {5F9A7471-2909-4BDC-BA68-9AEB829975D8}
+		{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC} = {5F9A7471-2909-4BDC-BA68-9AEB829975D8}
+		{55877F0D-C094-411F-8BCF-48E66E40CE81} = {5F9A7471-2909-4BDC-BA68-9AEB829975D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6076CB8-19C1-4078-A9EB-BDB27C8957AC}

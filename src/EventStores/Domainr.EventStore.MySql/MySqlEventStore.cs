@@ -1,4 +1,4 @@
-﻿using System.Data;
+﻿using System.Data.Common;
 using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql;
 using Domainr.EventStore.Sql.Configuration;
@@ -20,7 +20,7 @@ namespace Domainr.EventStore.MySql
         {
         }
 
-        protected override IDbConnection CreateConnection(string connectionString)
+        protected override DbConnection CreateConnection(string connectionString)
         {
             return new MySqlConnection(connectionString);
         }
