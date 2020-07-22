@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using Domainr.Core.EventSourcing.Abstraction;
+using Newtonsoft.Json.Serialization;
 
 namespace Domainr.EventStore.Serializers.ByteArray
 {
@@ -34,23 +35,38 @@ namespace Domainr.EventStore.Serializers.ByteArray
             }
         }
 
-        public virtual Event Deserialize(byte[] obj, string type)
+        public virtual Event Deserialize(byte[] byteArray, string eventType)
         {
-            if (obj == null)
+            if (byteArray == null)
             {
-                throw new ArgumentNullException(nameof(obj));
+                throw new ArgumentNullException(nameof(byteArray));
             }
 
-            if (obj.Length <= 0)
+            if (byteArray.Length <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(obj));
+                throw new ArgumentOutOfRangeException(nameof(byteArray));
             }
 
-            using (var memoryStream = new MemoryStream(obj, 0, obj.Length))
+            if (string.IsNullOrWhiteSpace(eventType))
+            {
+                throw new ArgumentNullException(nameof(eventType));
+            }
+
+            using (var memoryStream = new MemoryStream(byteArray, 0, byteArray.Length))
             {
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
-                var @event = (Event) _binaryFormatter.Deserialize(memoryStream);
+                var type = Type.GetType(eventType);
+                if (type == null)
+                {
+                    throw new InvalidOperationException("Provided event type is invalid");
+                }
+
+                _binaryFormatter.Binder = new DefaultSerializationBinder();
+
+                _binaryFormatter.Binder.BindToType(type.Assembly.FullName, type.FullName);
+
+                var @event = (Event)_binaryFormatter.Deserialize(memoryStream);
 
                 return @event;
             }

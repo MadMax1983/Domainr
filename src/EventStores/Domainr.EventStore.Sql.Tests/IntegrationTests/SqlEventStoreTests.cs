@@ -1,54 +1,144 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Dapper;
+using Domainr.Core.EventSourcing.Abstraction;
+using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
 using Domainr.EventStore.Sql.Tests.Doubles;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
+using Newtonsoft.Json.Linq;
 
 namespace Domainr.EventStore.Sql.Tests.IntegrationTests
 {
-    [TestFixture]
-    public sealed class SqlEventStoreTests
+    public abstract class SqlEventStoreTests<TSqlEventStore>
+        where TSqlEventStore : SqlEventStore<string>
     {
-        private readonly Mock<ILogger<SqliteEventStore<string>>> _mockLogger = new Mock<ILogger<SqliteEventStore<string>>>();
+        private const string CREATE_DATABASE_SQL_STATEMENT = "CREATE DATABASE [EventStoreTests]";
 
-        private readonly Mock<ISqlStatementsLoader> _mockSqlStatementsLoader = new Mock<ISqlStatementsLoader>();
+        private const string DROP_DATABASE_SQL_STATEMENT = "ALTER DATABASE [EventStoreTests] SET  SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [EventStoreTests]";
 
-        private readonly EventStoreSettings _settings = new EventStoreSettings
+        private const string INITIALIZE_DATABASE_SQL_STATEMENT = "CREATE TABLE [Events] ([Id] nvarchar(64) NOT NULL, [Version] bigint NOT NULL, [AggregateRootId] nvarchar(64) NOT NULL, [Type] nvarchar(512) NOT NULL, [Data] nvarchar(2048) NOT NULL)";
+
+        private const string SAVE_SQL_STATEMENT = "INSERT INTO [Events] ([Id], [AggregateRootId], [Version], [Type], [Data]) VALUES (@Id, @AggregateRootId, @Version, @Type, @Data)";
+
+        private const string GET_BY_AGGREGATE_ROOT_ID_SQL_STATEMENT = "SELECT [Type], [Data] FROM [Events] WHERE [AggregateRootId] = @AggregateRootId AND [Version] > @FromVersion";
+
+        protected Mock<ILogger<TSqlEventStore>> MockLogger { get; } = new Mock<ILogger<TSqlEventStore>>();
+
+        protected EventStoreSettings Settings { get; } = new EventStoreSettings();
+
+        protected Mock<ISqlStatementsLoader> MockSqlStatementsLoader { get; } = new Mock<ISqlStatementsLoader>();
+
+        protected Mock<IEventDataSerializer<string>> MockEventDataSerializer { get; } = new Mock<IEventDataSerializer<string>>();
+
+        protected virtual async Task OneTimeSetUpInternal(string initialConnectionString, string connectionString)
         {
-            ConnectionStrings = new Dictionary<string, string>
+            Settings.ConnectionStrings = new Dictionary<string, string>
             {
-                { "EventStore", "Data Source=:memory:" }
-            }
-        };
+                {"EventStoreInitialize", initialConnectionString},
+                {"EventStore", connectionString},
+            };
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            // var jsonString = "{ Id: \"_id\", Version: \"10\" }";
-            //
-            // var @event = (TestEvent)JsonConvert.DeserializeObject(jsonString,  Type.GetType("Domainr.EventStore.Sql.Tests.Doubles.TestEvent"));
+            await CreateDatabaseAsync<SqlConnection>(Settings.ConnectionStrings["EventStoreInitialize"]);
 
-            _mockSqlStatementsLoader
+            MockSqlStatementsLoader
                 .Setup(m => m[It.IsAny<string>()])
-                .Returns("SELECT '_id' AS [Id], 10 AS [Version], 'AggregateRootId' AS [AggregateRootId], 'arid' AS [AggregateRootId], '{ Id: \"_id\", Version: \"10\" }' AS [Data]");
+                .Returns((string sqlName) =>
+                {
+                    if (sqlName.Equals("InitializeAsync"))
+                    {
+                        return INITIALIZE_DATABASE_SQL_STATEMENT;
+                    }
+
+                    return sqlName.Equals("SaveAsync")
+                        ? SAVE_SQL_STATEMENT
+                        : GET_BY_AGGREGATE_ROOT_ID_SQL_STATEMENT;
+                });
+
+            MockEventDataSerializer
+                .Setup(m => m.Serialize(It.IsAny<Event>()))
+                .Returns((Event @event) => JsonConvert.SerializeObject(@event));
+
+            MockEventDataSerializer
+                .Setup(m => m.Deserialize(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns((string jsonString, string type) =>
+                {
+                    var jObj = JObject.Parse(jsonString);
+
+                    var version = jObj.GetValue("Version").Value<long>();
+
+                    var @event = (TestEvent)JsonConvert.DeserializeObject(jsonString, Type.GetType(type));
+
+                    @event.SetVersion(version);
+
+                    return @event;
+                });
         }
 
-        [Test]
-        public async Task GIVEN__WHEN__THEN_()
+        protected virtual async Task OneTimeTearDownInternal()
+        {
+            await DropDatabaseAsync<SqlConnection>(Settings.ConnectionStrings["EventStoreInitialize"]);
+        }
+
+        public async Task ExecuteTest()
         {
             // Arrange
-            var eventStore = new SqliteEventStore<string>(_mockLogger.Object, _settings, _mockSqlStatementsLoader.Object, null);
+            var events = new List<TestEvent>
+            {
+                new TestEvent("arid", "sp1"),
+                new TestEvent("arid", "sp2"),
+                new TestEvent("arid", "sp3")
+            };
+
+            for (var i = 0; i < events.Count; i++)
+            {
+                events[i].SetVersion(i);
+            }
+
+            var eventStore = CreateSqlEventStore();
 
             // Act
-            await eventStore.GetByAggregateRootIdAsync("");
+            await eventStore.InitializeAsync();
+
+            await eventStore.SaveAsync(events);
+
+            var queriedEvents = await eventStore.GetByAggregateRootIdAsync("arid");
 
             // Assert
+            queriedEvents
+                .Should()
+                .BeEquivalentTo(events);
 
+        }
+
+        protected abstract TSqlEventStore CreateSqlEventStore();
+
+        protected virtual async Task CreateDatabaseAsync<TDbConnection>(string connectionString)
+            where TDbConnection : IDbConnection, new()
+        {
+            await ExecuteSqlStatementAsync<TDbConnection>(connectionString, CREATE_DATABASE_SQL_STATEMENT);
+        }
+
+        protected virtual async Task DropDatabaseAsync<TDbConnection>(string connectionString)
+            where TDbConnection : IDbConnection, new()
+        {
+            await ExecuteSqlStatementAsync<TDbConnection>(connectionString, DROP_DATABASE_SQL_STATEMENT);
+        }
+
+        protected virtual async Task ExecuteSqlStatementAsync<TDbConnection>(string connectionString, string sqlStatement)
+            where TDbConnection : IDbConnection, new()
+        {
+            using var connection = new TDbConnection { ConnectionString = connectionString };
+
+
+            await connection.ExecuteAsync(sqlStatement);
         }
     }
 }

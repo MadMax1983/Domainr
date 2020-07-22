@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domainr.EventStore.Sql.Tests\Domainr.EventStore.Sql.Tests.csproj" />
+    <ProjectReference Include="..\Domainr.EventStore.SqlServer\Domainr.EventStore.SqlServer.csproj" />
     <ProjectReference Include="..\Domainr.EventStore.Sql\Domainr.EventStore.Sql.csproj" />
   </ItemGroup>
 

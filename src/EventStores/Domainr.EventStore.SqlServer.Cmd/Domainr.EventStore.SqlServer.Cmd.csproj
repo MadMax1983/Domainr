@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Domainr.EventStore.SqlServer\Domainr.EventStore.SqlServer.csproj" />
     <ProjectReference Include="..\Domainr.EventStore.Sql\Domainr.EventStore.Sql.csproj" />
   </ItemGroup>
