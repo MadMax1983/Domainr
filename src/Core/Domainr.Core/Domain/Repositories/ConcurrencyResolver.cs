@@ -17,10 +17,20 @@ namespace Domainr.Core.Domain.Repositories
             _conflictRegister = new Dictionary<Type, IReadOnlyCollection<Type>>();
         }
 
-        public bool ConflictsWith(Type eventType, IReadOnlyCollection<Type> previousEventTypes)
+        public bool ConflictsWith(Type eventType, IReadOnlyCollection<Type> concurrentEventTypes)
         {
+            // If (event)type is not registered
+            // it means that it conflicts with all other (event)types.
+            //
+            // OR
+            //
+            // If in registered-conflict-(event)types we have any of the passed-concurrent-(event)types
+            // then it conflicts with current (event)type as well.
+
             return !_conflictRegister.ContainsKey(eventType) ||
-                   previousEventTypes.Any(previousEvent => _conflictRegister[eventType].Any(et => et == previousEvent));
+                   concurrentEventTypes
+                       .Any(concurrentEvent => _conflictRegister[eventType]
+                           .Any(et => et == concurrentEvent));
         }
 
         public void RegisterConflictList(Type eventType, IReadOnlyCollection<Type> conflictsWith)

@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Domainr.Core.Domain.Repositories;
 using Domainr.Core.EventSourcing.Abstraction;
+using Domainr.Core.Exceptions;
+using Domainr.Core.Infrastructure;
+using Domainr.Core.Resources;
+using Domainr.Core.Tests.TestDoubles;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 
@@ -14,145 +20,267 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         private const long DEFAULT_AGGREGATE_ROOT_VERSION = -1;
         private const string AGGREGATE_ROOT_NAME = "Aggregate_Root_Name";
         private const int AGGREGATE_ROOT_NUMBER = 999;
-        private readonly Guid _aggregateRootId = Guid.NewGuid();
+
+        private readonly string _aggregateRootIdValue = Guid.NewGuid().ToString();
+
         private readonly ICollection<Event> _events = new List<Event>();
+
         private readonly Mock<IConcurrencyResolver> _mockConcurrencyResolver = new Mock<IConcurrencyResolver>();
         private readonly Mock<IEventStore> _mockEventStore = new Mock<IEventStore>();
-        private readonly Mock<IEventPublisher> _mockEventsDispatcher = new Mock<IEventPublisher>();
+        private readonly Mock<IEventPublisher> _mockEventPublisher = new Mock<IEventPublisher>();
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            ////_mockConcurrencyResolver
-            ////    .Setup(m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>())).Returns(
-            ////        (Type type, IReadOnlyCollection<Type> types) => type != typeof(TestAggregateRootNumberChanged));
+            _mockConcurrencyResolver
+                .Setup(m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()))
+                .Returns(
+                    (Type type, IReadOnlyCollection<Type> types) => types.Contains(type));
 
-            ////_mockEventStore.Setup(m => m.GetByAggregateRootIdAsync(It.IsAny<Guid>(), It.IsAny<long>())).ReturnsAsync(
-            ////    (Guid aggregateRootId, long fromVersion) => _events
-            ////        .Where(e => e.AggregateRootId == aggregateRootId && e.Version > fromVersion).OrderBy(e => e.Version)
-            ////        .ToList());
+            _mockEventStore.Setup(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>()))
+                .ReturnsAsync(
+                    (string aggregateRootId, long fromVersion) => _events
+                        .Where(e => e.AggregateRootId == aggregateRootId && e.Version > fromVersion)
+                        .OrderBy(e => e.Version)
+                        .ToList());
 
-            ////_mockEventStore.Setup(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>())).Returns(
-            ////    (IReadOnlyCollection<Event> events) =>
-            ////    {
-            ////        foreach (var @event in events)
-            ////        {
-            ////            _events.Add(@event);
-            ////        }
+            _mockEventStore
+                .Setup(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()))
+                .Returns((IReadOnlyCollection<Event> events) =>
+                {
+                    foreach (var @event in events)
+                    {
+                        _events.Add(@event);
+                    }
 
-            ////        return Task.FromResult(0);
-            ////    });
+                    return Task.FromResult(0);
+                });
         }
 
         [SetUp]
         public void SetUp()
         {
-            ////var version = DEFAULT_AGGREGATE_ROOT_VERSION;
-            ////_events.Add(new TestAggregateRootCreated(_aggregateRootId));
-            ////_events.Add(new TestAggregateRootNameChanged(_aggregateRootId, AGGREGATE_ROOT_NAME));
-            ////foreach (var @event in _events)
-            ////{
-            ////    @event.IncrementVersion(ref version);
-            ////}
+            var version = DEFAULT_AGGREGATE_ROOT_VERSION;
+
+            _events.Add(new TestEvent1(_aggregateRootIdValue, true));
+
+            foreach (var @event in _events)
+            {
+                @event.IncrementVersion(ref version);
+            }
         }
 
         [TearDown]
         public void TearDown()
         {
-            ////_events.Clear();
-            ////_mockConcurrencyResolver.Invocations.Clear();
-            ////_mockEventStore.Invocations.Clear();
-            ////_mockEventsDispatcher.Invocations.Clear();
+            _events.Clear();
+
+            _mockConcurrencyResolver.Invocations.Clear();
+            _mockEventStore.Invocations.Clear();
+            _mockEventPublisher.Invocations.Clear();
         }
 
         [Test]
-        public async Task GIVEN_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_aggregate_root_from_event_store_with_its_correct_state()
+        public async Task GIVEN_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_aggregate_root_in_its_correct_state()
         {
-            ////var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object, _mockEventsDispatcher.Object);
+            // Arrange
+            var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object, _mockEventPublisher.Object);
 
-            ////var aggregateRoot = await repository.GetByIdAsync(new TestAggregateRootId(_aggregateRootId.ToString()));
+            var aggregateRootId = new TestAggregateRootId(_aggregateRootIdValue);
 
-            ////_mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<Guid>(), It.IsAny<long>()), Times.Once());
+            // Act
+            var aggregateRoot = await repository.GetByIdAsync(aggregateRootId);
 
-            ////var expectedVersion = _events.Max(e => e.Version);
-            ////Assert.IsNotNull(aggregateRoot);
-            ////Assert.AreEqual(_aggregateRootId, aggregateRoot.Id);
-            ////Assert.AreEqual(expectedVersion, aggregateRoot.Version);
-            ////Assert.AreEqual(AGGREGATE_ROOT_NAME, aggregateRoot.Name);
+            // Assert
+            aggregateRoot.Id.ToString()
+                .Should()
+                .Be(_aggregateRootIdValue);
+
+            aggregateRoot.Version
+                .Should()
+                .Be(_events.Max(e => e.Version));
+
+            _mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>()), Times.Once());
+
         }
 
-        [TestCase("00000000-0000-0000-0000-000000000000")]
-        [TestCase("896db6df-f698-4bdd-9e34-e05df65ebc79")]
-        public void GIVEN_invalid_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_null(string aggregateRootId)
+        [Test]
+        public async Task GIVEN_invalid_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_null()
         {
-            ////var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object,
-            ////    _mockEventsDispatcher.Object);
-            ////TestAggregateRoot aggregateRoot = null;
-            ////Assert.DoesNotThrow(() => aggregateRoot = repository.GetByIdAsync(new Guid(aggregateRootId)).Result);
-            ////_mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<Guid>(), It.IsAny<long>()), Times.Once());
-            ////Assert.IsNull(aggregateRoot);
+            // Arrange
+            var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object, _mockEventPublisher.Object);
+
+            var aggregateRootId = new TestAggregateRootId(Guid.Empty.ToString());
+
+            // Act
+            var aggregateRoot = await repository.GetByIdAsync(aggregateRootId);
+
+            // Assert
+            aggregateRoot
+                .Should()
+                .BeNull();
+
+            _mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>()), Times.Once());
+        }
+
+        [Test]
+        public void GIVEN_no_aggregate_root_WHEN_attempting_to_save_THEN_throws_AggregateRootNullException()
+        {
+            // Arrange
+            const string EXPECTED_EXCEPTION_MESSAGE = "aggregateRoot";
+
+            var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object, _mockEventPublisher.Object);
+
+            // Act
+            Func<Task> act = async () => await repository.SaveAsync(null, Constants.INITIAL_VERSION);
+
+            // Assert
+            act.Should()
+                .Throw<AggregateRootNullException>()
+                .WithMessage(EXPECTED_EXCEPTION_MESSAGE);
+
+            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
+            _mockEventPublisher.Verify(m => m.PublishAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
+        }
+
+        [Test]
+        public void GIVEN_unchanged_aggregate_root_WHEN_attempting_to_save_THEN_throws_AggregateRootException()
+        {
+            // Arrange
+            var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object, _mockEventPublisher.Object);
+
+            var aggregateRoot = new TestAggregateRoot();
+
+            aggregateRoot.LoadFromStream(_events.ToList());
+
+            var expectedExceptionMessage = string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id, aggregateRoot.Version);
+
+            // Ac
+            Func<Task> act = async () => await repository.SaveAsync(aggregateRoot, Constants.INITIAL_VERSION);
+
+            // Assert
+            act.Should()
+                .Throw<AggregateRootException>()
+                .WithMessage(expectedExceptionMessage);
+
+            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
+            _mockEventPublisher.Verify(m => m.PublishAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
         }
 
         [Test]
         public void GIVEN_aggregate_root_concurrent_event_WHEN_saving_aggregate_root_that_has_changed_in_parallel_THEN_throws_ConcurrencyException()
         {
-            ////const int EXPECTED_VERSION = 0;
-            ////const string NEW_AGGREGATE_ROOT_NAME = "New_Aggregate_Root_Name";
-            ////var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object,
-            ////    _mockEventsDispatcher.Object);
-            ////var aggregateRoot = new TestAggregateRoot();
-            ////aggregateRoot.LoadFromStream(_events.ToList());
-            ////aggregateRoot.ChangeName(NEW_AGGREGATE_ROOT_NAME);
-            ////Assert.ThrowsAsync<ConcurrencyException>(() => repository.SaveAsync(aggregateRoot, EXPECTED_VERSION));
-            ////_mockConcurrencyResolver.Verify(
-            ////    m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()), Times.Once());
-            ////_mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<Guid>(), It.IsAny<long>()), Times.Once());
-            ////_mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
-            ////_mockEventsDispatcher.Verify(m => m.DispatchAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
+            const long EXPECTED_VERSION = 1;
+
+            PerformParallelTest(
+                act =>
+                {
+                    act.Should()
+                        .Throw<ConcurrencyException>();
+
+                    _events.Max(e => e.Version)
+                        .Should()
+                        .Be(EXPECTED_VERSION);
+
+                    _mockConcurrencyResolver.Verify(m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()), Times.Once());
+                    _mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>()), Times.Once());
+                    _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
+                    _mockEventPublisher.Verify(m => m.PublishAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Never());
+                },
+                AddTestEvent2);
         }
 
         [Test]
-        public void GIVEN_aggregate_root_not_concurrent_event_WHEN_saving_aggregate_root_that_has_changed_THEN_saves_aggregate_root_uncommitted_event()
+        public void GIVEN_aggregate_root_not_concurrent_event_WHEN_saving_aggregate_root_that_has_changed_in_parallel_THEN_saves_aggregate_root_uncommitted_event()
         {
-            ////const int EXPECTED_VERSION = 0;
-            ////var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object,
-            ////    _mockEventsDispatcher.Object);
-            ////var aggregateRoot = new TestAggregateRoot(Guid.NewGuid());
-            ////Assert.DoesNotThrowAsync(() => repository.SaveAsync(aggregateRoot, aggregateRoot.Version));
-            ////_mockConcurrencyResolver.Verify(
-            ////    m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()), Times.Never());
-            ////_mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<Guid>(), It.IsAny<int>()), Times.Never());
-            ////_mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
-            ////_mockEventsDispatcher.Verify(m => m.DispatchAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
-            ////Assert.AreEqual(EXPECTED_VERSION, aggregateRoot.Version);
+            const long EXPECTED_VERSION = 2;
+
+            PerformParallelTest(
+                act =>
+                {
+                    act.Should()
+                        .NotThrow<ConcurrencyException>();
+
+                    _events.Max(e => e.Version)
+                        .Should()
+                        .Be(EXPECTED_VERSION);
+
+                    _mockConcurrencyResolver.Verify(m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()), Times.Once());
+                    _mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>()), Times.Once());
+                    _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
+                    _mockEventPublisher.Verify(m => m.PublishAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
+                },
+                AddTestEvent1);
         }
 
         [Test]
-        public void GIVEN_aggregate_root_not_concurrent_event_WHEN_saving_aggregate_root_has_changed_in_parallel_THEN_saves_aggregate_root_uncommitted_event()
+        public void GIVEN_changed_aggregate_root_event_WHEN_saving_aggregate_root_THEN_saves_aggregate_root_uncommitted_event()
         {
-            ////const int EXPECTED_VERSION = 1;
-            ////const int NEW_AGGREGATE_ROOT_NUMBER = -999;
-            ////var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object,
-            ////    _mockEventsDispatcher.Object);
-            ////var aggregateRoot = new TestAggregateRoot();
-            ////aggregateRoot.LoadFromStream(_events.ToList());
-            ////aggregateRoot.ChangeNumber(NEW_AGGREGATE_ROOT_NUMBER);
-            ////var tempVersion = DEFAULT_AGGREGATE_ROOT_VERSION;
-            ////var newEvent = new TestAggregateRootNumberChanged(_aggregateRootId, AGGREGATE_ROOT_NUMBER);
-            ////while (tempVersion != aggregateRoot.Version + 1)
-            ////{
-            ////    newEvent.IncrementVersion(ref tempVersion);
-            ////}
+            const long EXPECTED_VERSION = 1;
 
-            ////_events.Add(newEvent);
-            ////Assert.DoesNotThrowAsync(() => repository.SaveAsync(aggregateRoot, EXPECTED_VERSION));
-            ////_mockConcurrencyResolver.Verify(
-            ////    m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()), Times.Once());
-            ////_mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<Guid>(), It.IsAny<long>()), Times.Once());
-            ////_mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
-            ////_mockEventsDispatcher.Verify(m => m.DispatchAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
-            ////Assert.AreEqual(EXPECTED_VERSION + 2, aggregateRoot.Version);
-            ////Assert.AreEqual(_events.Max(e => e.Version), aggregateRoot.Version);
+            PerformParallelTest(
+                act =>
+                {
+                    act.Should()
+                        .NotThrow<ConcurrencyException>();
+
+                    _events.Max(e => e.Version)
+                        .Should()
+                        .Be(EXPECTED_VERSION);
+
+                    _mockConcurrencyResolver.Verify(m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()), Times.Never());
+                    _mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>()), Times.Once());
+                    _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
+                    _mockEventPublisher.Verify(m => m.PublishAsync(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
+                });
+        }
+
+        private void PerformParallelTest(Action<Func<Task>> assert, Action<string, long> addEvent = null)
+        {
+            // Arrange
+            var aggregateRoot = new TestAggregateRoot();
+
+            aggregateRoot.LoadFromStream(_events.ToList());
+
+            var aggregateRootVersion = aggregateRoot.Version;
+
+            addEvent?.Invoke(aggregateRoot.Id.ToString(), aggregateRootVersion);
+
+            var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object, _mockEventPublisher.Object);
+
+            // Act
+            aggregateRoot.ExecuteSomeAction();
+
+            async Task Act() => await repository.SaveAsync(aggregateRoot, aggregateRootVersion);
+
+            // Assert
+            assert(Act);
+        }
+
+        private void AddTestEvent1(string aggregateRootId, long aggregateRootVersion)
+        {
+            var concurrentEvent = new TestEvent1(aggregateRootId, false);
+
+            AddParallelEvent(concurrentEvent, aggregateRootVersion);
+        }
+
+        private void AddTestEvent2(string aggregateRootId, long aggregateRootVersion)
+        {
+            var concurrentEvent = new TestEvent2(aggregateRootId);
+
+            AddParallelEvent(concurrentEvent, aggregateRootVersion);
+        }
+
+        private void AddParallelEvent<TEvent>(TEvent concurrentEvent, long aggregateRootVersion)
+            where TEvent : Event
+        {
+            // Simulates situation when an aggregate root is already loaded into memory
+            // and has uncommitted changes but before saving changes,
+            // a concurrent event is raised in an event store for this aggregate
+
+            concurrentEvent.IncrementVersion(ref aggregateRootVersion);
+
+            _events.Add(concurrentEvent);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Core.Exceptions;
@@ -300,6 +301,23 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             aggregateRoot.Version
                 .Should()
                 .Be(EXPECTED_VERSION);
+        }
+
+        [Test]
+        public void GIVEN_event_without_aggregate_root_event_handler_implemented_WHEN_processing_event_within_aggregate_THEN_throws_MethodNotFoundException()
+        {
+            // Arrange
+            var aggregateRoot = new TestAggregateRoot();
+
+            // Act
+            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
+
+            // Assert
+            var action = aggregateRoot.Invoking(ar => ar.DoSomethingUnhandled());
+
+            action
+                .Should()
+                .ThrowExactly<InvalidOperationException>();
         }
     }
 }

@@ -16,6 +16,16 @@ namespace Domainr.Core.Tests.TestDoubles
             ApplyChange(new TestEvent2(Id.ToString()));
         }
 
+        public void DoSomethingUnhandled()
+        {
+            ApplyChange(new TestEvent3(Id.ToString()));
+        }
+
+        public void ExecuteAnotherAction()
+        {
+            ApplyChange(new TestEvent4(Id.ToString()));
+        }
+
         private void On(TestEvent1 @event)
         {
             Id = @event.InitializeAggregateRootId
@@ -24,6 +34,10 @@ namespace Domainr.Core.Tests.TestDoubles
         }
 
         private void On(TestEvent2 @event)
+        {
+        }
+
+        private void On(TestEvent4 @event)
         {
         }
     }
