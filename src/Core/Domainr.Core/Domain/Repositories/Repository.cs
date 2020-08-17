@@ -28,7 +28,7 @@ namespace Domainr.Core.Domain.Repositories
 
         protected IConcurrencyResolver ConcurrencyResolver { get; }
 
-        public async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId, CancellationToken cancellationToken)
+        public async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId, CancellationToken cancellationToken = default)
         {
             var eventStream = (await _eventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), Constants.INITIAL_VERSION, cancellationToken)).ToList();
             if (!eventStream.Any())
@@ -43,7 +43,7 @@ namespace Domainr.Core.Domain.Repositories
             return aggregateRoot;
         }
 
-        public async Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken)
+        public async Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken = default)
         {
             if (aggregateRoot == null)
             {

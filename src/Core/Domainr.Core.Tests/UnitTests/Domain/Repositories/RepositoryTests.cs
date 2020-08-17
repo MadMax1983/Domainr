@@ -90,7 +90,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             var aggregateRootId = new TestAggregateRootId(_aggregateRootIdValue);
 
             // Act
-            var aggregateRoot = await repository.GetByIdAsync(aggregateRootId, CancellationToken.None);
+            var aggregateRoot = await repository.GetByIdAsync(aggregateRootId);
 
             // Assert
             aggregateRoot.Id.ToString()
@@ -114,7 +114,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             var aggregateRootId = new TestAggregateRootId(Guid.Empty.ToString());
 
             // Act
-            var aggregateRoot = await repository.GetByIdAsync(aggregateRootId, CancellationToken.None);
+            var aggregateRoot = await repository.GetByIdAsync(aggregateRootId);
 
             // Assert
             aggregateRoot
@@ -133,7 +133,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object, _mockEventPublisher.Object);
 
             // Act
-            Func<Task> act = async () => await repository.SaveAsync(null, Constants.INITIAL_VERSION, CancellationToken.None);
+            Func<Task> act = async () => await repository.SaveAsync(null, Constants.INITIAL_VERSION);
 
             // Assert
             act.Should()
@@ -157,7 +157,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             var expectedExceptionMessage = string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id, aggregateRoot.Version);
 
             // Act
-            Func<Task> act = async () => await repository.SaveAsync(aggregateRoot, Constants.INITIAL_VERSION, CancellationToken.None);
+            Func<Task> act = async () => await repository.SaveAsync(aggregateRoot, Constants.INITIAL_VERSION);
 
             // Assert
             act.Should()
@@ -252,7 +252,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             // Act
             aggregateRoot.ExecuteSomeAction();
 
-            async Task Act() => await repository.SaveAsync(aggregateRoot, aggregateRootVersion, CancellationToken.None);
+            async Task Act() => await repository.SaveAsync(aggregateRoot, aggregateRootVersion);
 
             // Assert
             assert(Act);

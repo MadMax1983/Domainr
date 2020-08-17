@@ -8,8 +8,8 @@ namespace Domainr.Core.Domain.Repositories
         where TAggregateRoot : AggregateRoot<TAggregateRootId>
         where TAggregateRootId : IAggregateRootId
     {
-        Task<TAggregateRoot> GetByIdAsync(TAggregateRootId id, CancellationToken cancellationToken);
+        Task<TAggregateRoot> GetByIdAsync(TAggregateRootId id, CancellationToken cancellationToken = default);
 
-        Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken);
+        Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken = default);
     }
 }
