@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Domainr.Core.EventSourcing.Abstraction;
@@ -42,7 +43,7 @@ namespace Domainr.EventStore.Sql
 
         public IEventDataSerializer<TSerializationType> EventDataSerializer { get; }
 
-        public virtual async Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion = Constants.INITIAL_VERSION)
+        public virtual async Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion = Constants.INITIAL_VERSION, CancellationToken cancellationToken = default)
         {
             return await ExecuteSqlStatement(async (connection, transaction) =>
             {
@@ -54,7 +55,7 @@ namespace Domainr.EventStore.Sql
                 var sql = SqlStatementsLoader[nameof(GetByAggregateRootIdAsync)];
 
                 var eventEntities =
-                    await connection.QueryAsync<EventEntity<TSerializationType>>(sql, @params, transaction);
+                    await connection.QueryAsync<EventEntity<TSerializationType>>(new CommandDefinition(sql, @params, transaction, cancellationToken: cancellationToken));
 
                 var events = eventEntities
                     .Select(eventEntity => EventDataSerializer.Deserialize(eventEntity.Data, eventEntity.Type))
@@ -64,11 +65,13 @@ namespace Domainr.EventStore.Sql
             });
         }
 
-        public virtual async Task SaveAsync(IReadOnlyCollection<Event> events)
+        public virtual async Task SaveAsync(IReadOnlyCollection<Event> events, CancellationToken cancellationToken = default)
         {
             await ExecuteSqlStatement(async (connection, transaction) =>
             {
                 var result = 0;
+
+                var sql = SqlStatementsLoader[nameof(SaveAsync)];
 
                 foreach (var @event in events)
                 {
@@ -80,7 +83,7 @@ namespace Domainr.EventStore.Sql
                     @params.Add("@Type", @event.GetType().AssemblyQualifiedName);
                     @params.Add("@Data", EventDataSerializer.Serialize(@event));
 
-                    result += await connection.ExecuteAsync(SqlStatementsLoader[nameof(SaveAsync)], @params, transaction);
+                    result += await connection.ExecuteAsync(new CommandDefinition(sql, @params, transaction, cancellationToken: cancellationToken));
                 }
 
                 return result;

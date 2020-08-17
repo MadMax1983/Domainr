@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.EventStore.Mongo.Conventions;
@@ -33,7 +34,7 @@ namespace Domainr.EventStore.Mongo
             _mongoClient = mongoClient;
         }
 
-        public async Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion)
+        public async Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion, CancellationToken cancellationToken = default)
         {
             var database = _mongoClient.GetDatabase(_databaseName);
 
@@ -46,7 +47,7 @@ namespace Domainr.EventStore.Mongo
                 filtersBuilder.Gt(doc => doc.Data.Version, fromVersion)
             );
 
-            var events = await collection.FindAsync(filters);
+            var events = await collection.FindAsync(filters, cancellationToken: cancellationToken);
 
             return events
                 .ToList()
@@ -54,7 +55,7 @@ namespace Domainr.EventStore.Mongo
                 .ToList();
         }
 
-        public async Task SaveAsync(IReadOnlyCollection<Event> events)
+        public async Task SaveAsync(IReadOnlyCollection<Event> events, CancellationToken cancellationToken = default)
         {
             var database = _mongoClient.GetDatabase(_databaseName);
 
@@ -66,7 +67,7 @@ namespace Domainr.EventStore.Mongo
                     Data = @event
                 });
 
-            await collection.InsertManyAsync(documents);
+            await collection.InsertManyAsync(documents, cancellationToken: cancellationToken);
         }
     }
 }

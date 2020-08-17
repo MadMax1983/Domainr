@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Domainr.Core.EventSourcing.Abstraction;
 
@@ -10,7 +11,7 @@ namespace Domainr.EventStore.InMemory
     {
         private static readonly List<Event> Store = new List<Event>();
 
-        public Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion)
+        public Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion, CancellationToken cancellationToken = default)
         {
             var result = Store
                 .Where(e => e.AggregateRootId.Equals(aggregateRootId))
@@ -21,7 +22,7 @@ namespace Domainr.EventStore.InMemory
             return Task.FromResult<IReadOnlyCollection<Event>>(result);
         }
 
-        public Task SaveAsync(IReadOnlyCollection<Event> events)
+        public Task SaveAsync(IReadOnlyCollection<Event> events, CancellationToken cancellationToken = default)
         {
             foreach (var @event in events)
             {
