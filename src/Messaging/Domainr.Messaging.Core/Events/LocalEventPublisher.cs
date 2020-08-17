@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Messaging.Core.DependencyInjection;
@@ -22,7 +23,7 @@ namespace Domainr.Messaging.Core.Events
 
         protected IContainer Container { get; }
 
-        public async Task PublishAsync(IReadOnlyCollection<Event> eventStream)
+        public async Task PublishAsync(IReadOnlyCollection<Event> eventStream, CancellationToken cancellationToken = default)
         {
             if (eventStream == null)
             {
@@ -38,7 +39,7 @@ namespace Domainr.Messaging.Core.Events
             {
                 try
                 {
-                    await Publish(@event);
+                    await Publish(@event, cancellationToken);
                 }
                 catch (Exception ex)
                 {
@@ -53,7 +54,7 @@ namespace Domainr.Messaging.Core.Events
             return typeof(IEventListener<>).MakeGenericType(@event.GetType());
         }
 
-        protected virtual async Task Publish<TEvent>(TEvent @event)
+        protected virtual async Task Publish<TEvent>(TEvent @event, CancellationToken cancellationToken)
             where TEvent : Event
         {
             var eventHandlerType = GetEventHandlerType(@event);
@@ -64,7 +65,7 @@ namespace Domainr.Messaging.Core.Events
             {
                 var handleMethod = eventHandlerType.GetMethod("OnAsync");
 
-                await (Task)handleMethod.Invoke(eventHandler, new object[] { @event });
+                await (Task)handleMethod.Invoke(eventHandler, new object[] { @event, cancellationToken });
             }
         }
     }
