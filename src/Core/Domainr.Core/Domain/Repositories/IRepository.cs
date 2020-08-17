@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Domainr.Core.Domain.Model;
 
 namespace Domainr.Core.Domain.Repositories
@@ -7,8 +8,8 @@ namespace Domainr.Core.Domain.Repositories
         where TAggregateRoot : AggregateRoot<TAggregateRootId>
         where TAggregateRootId : IAggregateRootId
     {
-        Task<TAggregateRoot> GetByIdAsync(TAggregateRootId id);
+        Task<TAggregateRoot> GetByIdAsync(TAggregateRootId id, CancellationToken cancellationToken);
 
-        Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion);
+        Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken);
     }
 }

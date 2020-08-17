@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Domainr.Core.Domain.Model;
 using Domainr.Core.EventSourcing.Abstraction;
@@ -27,9 +28,9 @@ namespace Domainr.Core.Domain.Repositories
 
         protected IConcurrencyResolver ConcurrencyResolver { get; }
 
-        public async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId)
+        public async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId, CancellationToken cancellationToken)
         {
-            var eventStream = (await _eventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), Constants.INITIAL_VERSION)).ToList();
+            var eventStream = (await _eventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), Constants.INITIAL_VERSION, cancellationToken)).ToList();
             if (!eventStream.Any())
             {
                 return null;
@@ -42,7 +43,7 @@ namespace Domainr.Core.Domain.Repositories
             return aggregateRoot;
         }
 
-        public async Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion)
+        public async Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken)
         {
             if (aggregateRoot == null)
             {
@@ -57,7 +58,7 @@ namespace Domainr.Core.Domain.Repositories
 
             var aggregateRootVersion = aggregateRoot.Version;
 
-            var concurrentEvents = await GetConcurrentEventsAsync(aggregateRoot.Id, expectedVersion);
+            var concurrentEvents = await GetConcurrentEventsAsync(aggregateRoot.Id, expectedVersion, cancellationToken);
             if (concurrentEvents.Any())
             {
                 CheckConcurrency(concurrentEvents, uncommittedEvents, aggregateRoot.Id, aggregateRoot.Version);
@@ -67,16 +68,16 @@ namespace Domainr.Core.Domain.Repositories
 
             var committedEvents = aggregateRoot.CommitChanges(aggregateRootVersion);
 
-            await _eventStore.SaveAsync(committedEvents);
+            await _eventStore.SaveAsync(committedEvents, cancellationToken);
 
-            await _eventPublisher.PublishAsync(committedEvents);
+            await _eventPublisher.PublishAsync(committedEvents, cancellationToken);
         }
 
-        private async Task<IReadOnlyCollection<Event>> GetConcurrentEventsAsync(TAggregateRootId aggregateRootId, long expectedVersion)
+        private async Task<IReadOnlyCollection<Event>> GetConcurrentEventsAsync(TAggregateRootId aggregateRootId, long expectedVersion, CancellationToken cancellationToken)
         {
             return expectedVersion <= Constants.INITIAL_VERSION
                 ? new Event[0]
-                : await _eventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), expectedVersion);
+                : await _eventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), expectedVersion, cancellationToken);
         }
 
         private void CheckConcurrency(IEnumerable<Event> concurrentEvents, IEnumerable<Event> uncommittedEvents, TAggregateRootId aggregateRootId, long aggregateRootVersion)
