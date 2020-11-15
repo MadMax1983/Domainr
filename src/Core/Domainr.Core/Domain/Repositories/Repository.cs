@@ -16,14 +16,12 @@ namespace Domainr.Core.Domain.Repositories
         where TAggregateRootId : IAggregateRootId
     {
         private readonly IEventStore _eventStore;
-        private readonly IEventPublisher _eventPublisher;
 
-        protected Repository(IConcurrencyResolver concurrencyResolver, IEventStore eventStore, IEventPublisher eventPublisher)
+        protected Repository(IConcurrencyResolver concurrencyResolver, IEventStore eventStore)
         {
             ConcurrencyResolver = concurrencyResolver;
 
             _eventStore = eventStore;
-            _eventPublisher = eventPublisher;
         }
 
         protected IConcurrencyResolver ConcurrencyResolver { get; }
@@ -69,8 +67,6 @@ namespace Domainr.Core.Domain.Repositories
             var committedEvents = aggregateRoot.CommitChanges(aggregateRootVersion);
 
             await _eventStore.SaveAsync(committedEvents, cancellationToken);
-
-            await _eventPublisher.PublishAsync(committedEvents, cancellationToken);
         }
 
         private async Task<IReadOnlyCollection<Event>> GetConcurrentEventsAsync(TAggregateRootId aggregateRootId, long expectedVersion, CancellationToken cancellationToken)

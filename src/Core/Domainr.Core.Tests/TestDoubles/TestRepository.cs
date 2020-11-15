@@ -6,8 +6,8 @@ namespace Domainr.Core.Tests.TestDoubles
     internal sealed class TestRepository
         : Repository<TestAggregateRoot, TestAggregateRootId>
     {
-        public TestRepository(IConcurrencyResolver concurrencyResolver, IEventStore eventStore, IEventPublisher eventPublisher)
-            : base(concurrencyResolver, eventStore, eventPublisher)
+        public TestRepository(IConcurrencyResolver concurrencyResolver, IEventStore eventStore)
+            : base(concurrencyResolver, eventStore)
         {
         }
     }
