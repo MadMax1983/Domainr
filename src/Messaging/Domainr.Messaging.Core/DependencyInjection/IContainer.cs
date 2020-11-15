@@ -5,6 +5,8 @@ namespace Domainr.Messaging.Core.DependencyInjection
 {
     public interface IContainer
     {
+        IScope CreateScope();
+
         TService GetService<TService>();
 
         object GetService(Type serviceType);

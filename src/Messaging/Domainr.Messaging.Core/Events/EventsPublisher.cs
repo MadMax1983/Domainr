@@ -9,17 +9,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Domainr.Messaging.Core.Events
 {
-    public class LocalEventPublisher
+    public class EventsPublisher
         : IEventPublisher
     {
-        public LocalEventPublisher(ILogger<LocalEventPublisher> logger, IContainer container)
+        public EventsPublisher(ILogger<EventsPublisher> logger, IContainer container)
         {
             Logger = logger;
 
             Container = container;
         }
 
-        protected ILogger<LocalEventPublisher> Logger { get; }
+        protected ILogger<EventsPublisher> Logger { get; }
 
         protected IContainer Container { get; }
 

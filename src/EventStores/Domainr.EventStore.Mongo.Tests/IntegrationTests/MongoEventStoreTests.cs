@@ -17,13 +17,13 @@ namespace Domainr.EventStore.Mongo.Tests.IntegrationTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _mongoClient = new MongoClient("");
+            _mongoClient = new MongoClient("mongodb://localhost:27017");
         }
 
         [TearDown]
         public void TearDown()
         {
-            var db = _mongoClient.GetDatabase("EventStore");
+            var db = _mongoClient.GetDatabase("arch-doc-event-store");
 
             var collection = db.GetCollection<EventDocument>("Events");
 
@@ -34,7 +34,9 @@ namespace Domainr.EventStore.Mongo.Tests.IntegrationTests
         public async Task GIVEN__WHEN__THEN_()
         {
             // Arrange
-            var config = new ConfigurationBuilder().Build();
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             // Act
             var eventStore = new MongoEventStore(config, _mongoClient);
@@ -56,10 +58,11 @@ namespace Domainr.EventStore.Mongo.Tests.IntegrationTests
                 event3
             };
 
-            // Assert
-            await eventStore.SaveAsync(events);
+            //Assert
+           await eventStore.SaveAsync(events);
 
             var dbEvents = await eventStore.GetByAggregateRootIdAsync(event1.AggregateRootId, event1.Version - 1);
+            //var dbEvents = await eventStore.GetByAggregateRootIdAsync("a85e452e-034b-11eb-8725-77832f2f0171", -1);
         }
     }
 }

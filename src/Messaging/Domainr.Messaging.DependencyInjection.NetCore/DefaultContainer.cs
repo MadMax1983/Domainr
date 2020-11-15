@@ -16,6 +16,11 @@ namespace Domainr.Messaging.DependencyInjection.NetCore
             _serviceProvider = serviceProvider;
         }
 
+        public IScope CreateScope()
+        {
+            return new DefaultScope(_serviceProvider.CreateScope(), this);
+        }
+
         public TService GetService<TService>()
         {
             return _serviceProvider.GetService<TService>();
