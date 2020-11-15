@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Messaging.Core", "Domainr.Messaging.Core\Domainr.Messaging.Core.csproj", "{2D44C25C-8526-4C67-AB66-C407905D54C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.Messaging.DependencyInjection.NetCore", "Domainr.Messaging.DependencyInjection.NetCore\Domainr.Messaging.DependencyInjection.NetCore.csproj", "{279EC308-120C-4DF0-BBC7-FDA3E03893D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Messaging.DependencyInjection.NetCore", "Domainr.Messaging.DependencyInjection.NetCore\Domainr.Messaging.DependencyInjection.NetCore.csproj", "{279EC308-120C-4DF0-BBC7-FDA3E03893D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domainr.Messaging.Azure.ServiceBus", "Domainr.Messaging.Azure.ServiceBus\Domainr.Messaging.Azure.ServiceBus.csproj", "{56AC87E6-8760-4ECA-8716-4F54ACDC7221}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.Messaging.Azure.ServiceBus", "Domainr.Messaging.Azure.ServiceBus\Domainr.Messaging.Azure.ServiceBus.csproj", "{56AC87E6-8760-4ECA-8716-4F54ACDC7221}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

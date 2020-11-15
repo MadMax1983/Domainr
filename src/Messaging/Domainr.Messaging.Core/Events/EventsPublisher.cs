@@ -4,15 +4,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Domainr.Core.EventSourcing.Abstraction;
+using Domainr.Messaging.Azure.ServiceBus;
 using Domainr.Messaging.Core.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Domainr.Messaging.Core.Events
 {
-    public class EventsPublisher
-        : IEventPublisher
+    public abstract class EventsPublisher
+        : IEventsPublisher
     {
-        public EventsPublisher(ILogger<EventsPublisher> logger, IContainer container)
+        protected EventsPublisher(ILogger<EventsPublisher> logger, IContainer container)
         {
             Logger = logger;
 
@@ -23,7 +24,7 @@ namespace Domainr.Messaging.Core.Events
 
         protected IContainer Container { get; }
 
-        public async Task PublishAsync(IReadOnlyCollection<Event> eventStream, CancellationToken cancellationToken = default)
+        public async Task PublishAsync(IReadOnlyCollection<Event> eventStream, Mode mode = Mode.Default, CancellationToken cancellationToken = default)
         {
             if (eventStream == null)
             {
@@ -35,15 +36,25 @@ namespace Domainr.Messaging.Core.Events
                 throw new ArgumentException(); // TODO: Add custom message.
             }
 
-            foreach (var @event in eventStream)
+            using (var scope = Container.CreateScope())
             {
-                try
+                switch (mode)
                 {
-                    await Publish(@event, cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, ex.Message); // TODO: Add custom message here.
+                    case Mode.Default:
+                        await PublishLocallyAsync(eventStream, scope, cancellationToken);
+                        await PublishRemoteAsync(eventStream, scope, cancellationToken);
+
+                        break;
+                    case Mode.Local:
+                        await PublishLocallyAsync(eventStream, scope, cancellationToken);
+
+                        break;
+                    case Mode.Remote:
+                        await PublishRemoteAsync(eventStream, scope, cancellationToken);
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                 }
             }
         }
@@ -54,19 +65,38 @@ namespace Domainr.Messaging.Core.Events
             return typeof(IEventListener<>).MakeGenericType(@event.GetType());
         }
 
-        protected virtual async Task Publish<TEvent>(TEvent @event, CancellationToken cancellationToken)
+        protected virtual async Task PublishLocallyAsync(IReadOnlyCollection<Event> eventStream, IScope scope, CancellationToken cancellationToken)
+        {
+            foreach (var @event in eventStream)
+            {
+                await PublishLocallyAsync(@event, scope, cancellationToken);
+            }
+        }
+
+        protected virtual async Task PublishLocallyAsync<TEvent>(TEvent @event, IScope scope, CancellationToken cancellationToken)
             where TEvent : Event
         {
             var eventHandlerType = GetEventHandlerType(@event);
 
-            var eventHandlers = Container.GetServices(eventHandlerType).ToList();
+            var eventHandlers = scope.Container.GetServices(eventHandlerType).ToList();
 
             foreach (var eventHandler in eventHandlers)
             {
-                var handleMethod = eventHandlerType.GetMethod("OnAsync");
+                try
+                {
+                    var handleMethod = eventHandlerType.GetMethod("OnAsync");
 
-                await (Task)handleMethod.Invoke(eventHandler, new object[] { @event, cancellationToken });
+                    await (Task)handleMethod.Invoke(eventHandler, new object[] { @event, cancellationToken });
+                }
+                catch (Exception ex)
+                {
+                    // TODO: Add retry policy here
+                    // TODO: Add logging here
+                }
             }
         }
+
+
+        protected abstract Task PublishRemoteAsync(IReadOnlyCollection<Event> eventStream, IScope scope, CancellationToken cancellationToken);
     }
 }
