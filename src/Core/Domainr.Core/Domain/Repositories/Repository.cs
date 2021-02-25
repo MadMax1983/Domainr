@@ -13,22 +13,22 @@ namespace Domainr.Core.Domain.Repositories
     public abstract class Repository<TAggregateRoot, TAggregateRootId>
         : IRepository<TAggregateRoot, TAggregateRootId>
         where TAggregateRoot : AggregateRoot<TAggregateRootId>, new()
-        where TAggregateRootId : IAggregateRootId
+        where TAggregateRootId : class, IAggregateRootId
     {
-        private readonly IEventStore _eventStore;
-
         protected Repository(IConcurrencyResolver concurrencyResolver, IEventStore eventStore)
         {
             ConcurrencyResolver = concurrencyResolver;
 
-            _eventStore = eventStore;
+            EventStore = eventStore;
         }
 
         protected IConcurrencyResolver ConcurrencyResolver { get; }
+        
+        protected IEventStore EventStore { get; }
 
-        public async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId, CancellationToken cancellationToken = default)
+        public virtual async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId, CancellationToken cancellationToken = default)
         {
-            var eventStream = (await _eventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), Constants.INITIAL_VERSION, cancellationToken)).ToList();
+            var eventStream = (await EventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), Constants.INITIAL_VERSION, cancellationToken)).ToList();
             if (!eventStream.Any())
             {
                 return null;
@@ -41,7 +41,7 @@ namespace Domainr.Core.Domain.Repositories
             return aggregateRoot;
         }
 
-        public async Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken = default)
+        public virtual async Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken = default)
         {
             if (aggregateRoot == null)
             {
@@ -51,7 +51,7 @@ namespace Domainr.Core.Domain.Repositories
             var uncommittedEvents = aggregateRoot.GetUncommittedChanges();
             if (!uncommittedEvents.Any())
             {
-                throw new AggregateRootException(string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id.ToString(), aggregateRoot.Version));
+                throw new AggregateRootException(string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id, aggregateRoot.Version));
             }
 
             var aggregateRootVersion = aggregateRoot.Version;
@@ -66,17 +66,17 @@ namespace Domainr.Core.Domain.Repositories
 
             var committedEvents = aggregateRoot.CommitChanges(aggregateRootVersion);
 
-            await _eventStore.SaveAsync(committedEvents, cancellationToken);
+            await EventStore.SaveAsync(committedEvents, cancellationToken);
         }
 
-        private async Task<IReadOnlyCollection<Event>> GetConcurrentEventsAsync(TAggregateRootId aggregateRootId, long expectedVersion, CancellationToken cancellationToken)
+        protected virtual async Task<IReadOnlyCollection<Event>> GetConcurrentEventsAsync(TAggregateRootId aggregateRootId, long expectedVersion, CancellationToken cancellationToken)
         {
             return expectedVersion <= Constants.INITIAL_VERSION
                 ? new Event[0]
-                : await _eventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), expectedVersion, cancellationToken);
+                : await EventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), expectedVersion, cancellationToken);
         }
 
-        private void CheckConcurrency(IEnumerable<Event> concurrentEvents, IEnumerable<Event> uncommittedEvents, TAggregateRootId aggregateRootId, long aggregateRootVersion)
+        protected virtual void CheckConcurrency(IEnumerable<Event> concurrentEvents, IEnumerable<Event> uncommittedEvents, TAggregateRootId aggregateRootId, long aggregateRootVersion)
         {
             var concurrentEventTypes = concurrentEvents.Select(pe => pe.GetType()).ToList();
 

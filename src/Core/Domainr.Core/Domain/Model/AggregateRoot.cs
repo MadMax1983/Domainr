@@ -10,15 +10,13 @@ using Domainr.Core.Resources;
 namespace Domainr.Core.Domain.Model
 {
     public abstract class AggregateRoot<TAggregateRootId>
-        where TAggregateRootId : IAggregateRootId
+        where TAggregateRootId : class, IAggregateRootId
     {
         private const string ON_METHOD_NAME = "On";
 
         private readonly List<Event> _changes;
 
         private List<MethodInfo> _onMethods;
-
-        private TAggregateRootId _aggregateRootId;
 
         protected AggregateRoot()
         {
@@ -31,27 +29,17 @@ namespace Domainr.Core.Domain.Model
             Version = Constants.INITIAL_VERSION;
         }
 
-        public TAggregateRootId Id
+        protected AggregateRoot(TAggregateRootId aggregateRootId)
+            : this()
         {
-            get => _aggregateRootId;
-
-            protected set
-            {
-                if (value == null)
-                {
-                    throw new AggregateRootIdException(ExceptionResources.NullAggregateRootId);
-                }
-
-                if (_aggregateRootId != null)
-                {
-                    throw new AggregateRootIdException(ExceptionResources.CannotChangeAggregateRootId);
-                }
-
-                _aggregateRootId = value;
-            }
+            Id = aggregateRootId;
         }
 
+        public TAggregateRootId Id { get; private set; }
+
         public long Version { get; private set; }
+
+        protected abstract TAggregateRootId CreateAggregateRootId(string aggregateRootIdString); 
 
         internal IReadOnlyCollection<Event> GetUncommittedChanges()
         {
@@ -72,6 +60,7 @@ namespace Domainr.Core.Domain.Model
 
             var lastEvent = orderedEventStream.Last();
 
+            Id = CreateAggregateRootId(lastEvent.AggregateRootId);
             Version = lastEvent.Version;
         }
 
@@ -105,7 +94,7 @@ namespace Domainr.Core.Domain.Model
             ApplyChange(@event, true);
         }
 
-        private void ValidateEventStream(IReadOnlyCollection<Event> eventStream)
+        private static void ValidateEventStream(IReadOnlyCollection<Event> eventStream)
         {
             if (eventStream == null)
             {
@@ -159,11 +148,11 @@ namespace Domainr.Core.Domain.Model
 
         private void InvokeOnMethod(Event @event)
         {
-            var onMethod = _onMethods.Single(hm => hm.GetParameters().Single().ParameterType == @event.GetType());
+            var onMethod = _onMethods.SingleOrDefault(hm => hm.GetParameters().Single().ParameterType == @event.GetType());
 
             try
             {
-                onMethod.Invoke(this, new object[] { @event });
+                onMethod?.Invoke(this, new object[] { @event });
             }
             catch (Exception ex)
             {

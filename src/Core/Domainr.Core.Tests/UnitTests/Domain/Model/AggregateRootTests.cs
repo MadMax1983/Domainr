@@ -17,91 +17,15 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
         private const string AGGREGATE_ROOT_ID = "aggregateRootId";
 
         [Test]
-        public void GIVEN_no_data_WHEN_instantiating_new_aggregate_root_THEN_initializes_aggregate_root_with_null_id_AND_initial_version()
+        public void GIVEN_serialized_aggregate_root_id_WHEN_instantiating_aggregate_root_THEN_initializes_aggregate_root_with_id_AND_initial_version()
         {
-            // Arrange & Act
-            var aggregateRoot = new TestAggregateRoot();
-
-            // Assert
-            aggregateRoot.Id
-                .Should()
-                .BeNull();
-
-            aggregateRoot.Version
-                .Should()
-                .Be(Constants.INITIAL_VERSION);
-        }
-
-        [Test]
-        public void GIVEN_aggregate_root_id_WHEN_instantiating_aggregate_root_THEN_initializes_aggregate_root_with_id_AND_initial_version()
-        {
-            // Arrange
-            var aggregateRoot = new TestAggregateRoot();
-
             // Act
-            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
-
+            var aggregateRoot = new TestAggregateRoot(AGGREGATE_ROOT_ID);
+            
             // Assert
             aggregateRoot.Id
                 .Should()
                 .NotBeNull();
-
-            aggregateRoot.Version
-                .Should()
-                .Be(Constants.INITIAL_VERSION);
-        }
-
-        [Test]
-        public void GIVEN_aggregate_root_id_WHEN_calling_aggregate_root_method_that_generates_event_that_initializes_aggregate_root_id_multiple_times_THEN_throws_AggregateRootIdException()
-        {
-            // Arrange
-            var aggregateRoot = new TestAggregateRoot();
-
-            // Act
-
-            var action = aggregateRoot.Id.Invoking(aggregateRootId =>
-            {
-                aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
-                aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
-            });
-
-            // Assert
-            action
-                .Should()
-                .Throw<AggregateRootIdException>()
-                .WithMessage(ExceptionResources.CannotChangeAggregateRootId);
-
-            aggregateRoot.Id
-                .Should()
-                .NotBeNull();
-
-            aggregateRoot.Version
-                .Should()
-                .Be(Constants.INITIAL_VERSION);
-        }
-
-        [Test]
-        public void GIVEN_null_aggregate_root_id_WHEN_calling_aggregate_root_method_that_generates_event_that_initializes_aggregate_root_id_THEN_throws_AggregateRootIdException()
-        {
-            // Arrange
-            var aggregateRoot = new TestAggregateRoot();
-
-            // Act
-
-            var action = aggregateRoot.Id.Invoking(aggregateRootId =>
-            {
-                aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, false);
-            });
-
-            // Assert
-            action
-                .Should()
-                .Throw<AggregateRootIdException>()
-                .WithMessage(ExceptionResources.NullAggregateRootId);
-
-            aggregateRoot.Id
-                .Should()
-                .BeNull();
 
             aggregateRoot.Version
                 .Should()
@@ -114,11 +38,11 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             // Arrange
             const int EXPECTED_NO_OF_CHANGES = 1;
 
-            var aggregateRoot = new TestAggregateRoot();
+            var aggregateRoot = new TestAggregateRoot(AGGREGATE_ROOT_ID);
 
             // Act
-            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
-
+            aggregateRoot.ExecuteSomeAction();
+            
             var changes = aggregateRoot.GetUncommittedChanges();
 
             // Assert
@@ -139,23 +63,27 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
 
             var version = Constants.INITIAL_VERSION;
 
-            var createdEvent = new TestEvent1(AGGREGATE_ROOT_ID, true);
-            createdEvent.IncrementVersion(ref version);
+            var testEvent1 = new TestEvent1(AGGREGATE_ROOT_ID, true);
+            testEvent1.IncrementVersion(ref version);
 
             var eventsStream = new List<Event>
             {
-                createdEvent
+                testEvent1
             };
 
             var aggregateRoot = new TestAggregateRoot();
+            
             // Act
-
             aggregateRoot.LoadFromStream(eventsStream);
 
             // Assert
             aggregateRoot.GetUncommittedChanges().Count
                 .Should()
                 .Be(EXPECTED_NUMBER_OF_UNCOMMITTED_EVENTS);
+
+            aggregateRoot.Id.ToString()
+                .Should()
+                .Be(AGGREGATE_ROOT_ID);
 
             aggregateRoot.Version
                 .Should()
@@ -218,20 +146,20 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
         public void GIVEN_invalid_aggregate_root_version_WHEN_commiting_changes_THEN_throws_AggregateRootVersionException()
         {
             // Arrange
-            const int AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK = -2;
+            const int INVALID_AGGREGATE_ROOT_VERSION = -2;
 
-            var aggregateRoot = new TestAggregateRoot();
+            var aggregateRoot = new TestAggregateRoot(AGGREGATE_ROOT_ID);
 
-            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
+            aggregateRoot.ExecuteSomeAction();
 
             // Act
-            var action = aggregateRoot.Invoking(ar => ar.CommitChanges(AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK));
+            var action = aggregateRoot.Invoking(ar => ar.CommitChanges(INVALID_AGGREGATE_ROOT_VERSION));
 
             // Assert
             action
                 .Should()
                 .Throw<AggregateRootVersionException>()
-                .WithMessage(string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK));
+                .WithMessage(string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, INVALID_AGGREGATE_ROOT_VERSION));
         }
 
         [Test]
@@ -242,10 +170,10 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             const int EXPECTED_VERSION = 0;
             const int EXPECTED_NUMBER_OF_UNCOMMITTED_CHANGES = 0;
 
-            var aggregateRoot = new TestAggregateRoot();
+            var aggregateRoot = new TestAggregateRoot(AGGREGATE_ROOT_ID);
 
             // Act
-            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
+            aggregateRoot.ExecuteSomeAction();
 
             // Assert
             var changesToSave = aggregateRoot.CommitChanges(aggregateRoot.Version).ToArray();
@@ -277,11 +205,9 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             const int AGGREGATE_ROOT_VERSION_AFTER_CONCURRENCY_CHECK = 1;
             const int EXPECTED_VERSION = 2;
 
-            var aggregateRoot = new TestAggregateRoot();
+            var aggregateRoot = new TestAggregateRoot(AGGREGATE_ROOT_ID);
 
             // Act
-            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
-
             aggregateRoot.CommitChanges(aggregateRoot.Version);
 
             aggregateRoot.ExecuteSomeAction();
@@ -304,20 +230,24 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
         }
 
         [Test]
-        public void GIVEN_event_without_aggregate_root_event_handler_implemented_WHEN_processing_event_within_aggregate_THEN_throws_MethodNotFoundException()
+        public void GIVEN_event_without_aggregate_root_event_handler_implemented_WHEN_processing_event_within_aggregate_THEN_does_not_throw_Exception()
         {
             // Arrange
-            var aggregateRoot = new TestAggregateRoot();
+            const int EXPECTED_NUMBER_OF_UNCOMMITED_EVENTS = 1;
+
+            var aggregateRoot = new TestAggregateRoot(AGGREGATE_ROOT_ID);
 
             // Act
-            aggregateRoot.InitializeId(AGGREGATE_ROOT_ID, true);
-
-            // Assert
             var action = aggregateRoot.Invoking(ar => ar.DoSomethingUnhandled());
-
+            
+            // Assert
             action
                 .Should()
-                .ThrowExactly<InvalidOperationException>();
+                .NotThrow();
+
+            aggregateRoot.GetUncommittedChanges().Count
+                .Should()
+                .Be(EXPECTED_NUMBER_OF_UNCOMMITED_EVENTS);
         }
     }
 }

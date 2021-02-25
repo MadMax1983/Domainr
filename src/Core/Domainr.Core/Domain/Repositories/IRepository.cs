@@ -6,7 +6,7 @@ namespace Domainr.Core.Domain.Repositories
 {
     public interface IRepository<TAggregateRoot, in TAggregateRootId>
         where TAggregateRoot : AggregateRoot<TAggregateRootId>
-        where TAggregateRootId : IAggregateRootId
+        where TAggregateRootId : class, IAggregateRootId
     {
         Task<TAggregateRoot> GetByIdAsync(TAggregateRootId id, CancellationToken cancellationToken = default);
 
