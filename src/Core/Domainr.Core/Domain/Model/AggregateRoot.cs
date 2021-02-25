@@ -9,8 +9,8 @@ using Domainr.Core.Resources;
 
 namespace Domainr.Core.Domain.Model
 {
-    public abstract class AggregateRoot<TAggregateRootId>
-        where TAggregateRootId : class, IAggregateRootId
+    public abstract class AggregateRoot<TId>
+        where TId : class, IAggregateRootId
     {
         private const string ON_METHOD_NAME = "On";
 
@@ -29,17 +29,15 @@ namespace Domainr.Core.Domain.Model
             Version = Constants.INITIAL_VERSION;
         }
 
-        protected AggregateRoot(TAggregateRootId aggregateRootId)
+        protected AggregateRoot(TId aggregateRootId)
             : this()
         {
             Id = aggregateRootId;
         }
 
-        public TAggregateRootId Id { get; private set; }
+        public TId Id { get; private set; }
 
         public long Version { get; private set; }
-
-        protected abstract TAggregateRootId CreateAggregateRootId(string aggregateRootIdString); 
 
         internal IReadOnlyCollection<Event> GetUncommittedChanges()
         {
@@ -60,7 +58,7 @@ namespace Domainr.Core.Domain.Model
 
             var lastEvent = orderedEventStream.Last();
 
-            Id = CreateAggregateRootId(lastEvent.AggregateRootId);
+            Id = DeserializeId(lastEvent.AggregateRootId);
             Version = lastEvent.Version;
         }
 
@@ -83,6 +81,8 @@ namespace Domainr.Core.Domain.Model
 
             return changes;
         }
+
+        protected abstract TId DeserializeId(string serializedId);
 
         protected void ApplyChange(Event @event)
         {
