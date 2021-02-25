@@ -5,10 +5,18 @@ namespace Domainr.Core.Tests.TestDoubles
     internal sealed class TestAggregateRoot
         : AggregateRoot<TestAggregateRootId>
     {
-
-        public void InitializeId(string aggregateRootId, bool initializeAggregateRootId)
+        public TestAggregateRoot()
         {
-            ApplyChange(new TestEvent1(aggregateRootId, initializeAggregateRootId));
+        }
+        
+        public TestAggregateRoot(string serializedAggregateRootId)
+            : base(new TestAggregateRootId(serializedAggregateRootId))
+        {
+        }
+        
+        protected override TestAggregateRootId CreateAggregateRootId(string serializedAggregateRootId)
+        {
+            return new TestAggregateRootId(serializedAggregateRootId);
         }
 
         public void ExecuteSomeAction()
@@ -24,13 +32,6 @@ namespace Domainr.Core.Tests.TestDoubles
         public void ExecuteAnotherAction()
         {
             ApplyChange(new TestEvent4(Id.ToString()));
-        }
-
-        private void On(TestEvent1 @event)
-        {
-            Id = @event.InitializeAggregateRootId
-                ? new TestAggregateRootId(@event.AggregateRootId)
-                : null;
         }
 
         private void On(TestEvent2 @event)

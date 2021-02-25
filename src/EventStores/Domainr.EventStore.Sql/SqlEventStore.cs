@@ -35,13 +35,13 @@ namespace Domainr.EventStore.Sql
             EventDataSerializer = eventDataSerializer;
         }
 
-        public ILogger<SqlEventStore<TSerializationType>> Logger { get; }
+        protected ILogger<SqlEventStore<TSerializationType>> Logger { get; }
 
-        public EventStoreSettings Settings { get; }
+        protected EventStoreSettings Settings { get; }
 
-        public ISqlStatementsLoader SqlStatementsLoader { get; }
+        protected ISqlStatementsLoader SqlStatementsLoader { get; }
 
-        public IEventDataSerializer<TSerializationType> EventDataSerializer { get; }
+        protected IEventDataSerializer<TSerializationType> EventDataSerializer { get; }
 
         public virtual async Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion = Constants.INITIAL_VERSION, CancellationToken cancellationToken = default)
         {
@@ -100,7 +100,7 @@ namespace Domainr.EventStore.Sql
             var connection = CreateConnection(Settings.ConnectionStrings["EventStore"]);
             if (connection.State != ConnectionState.Open)
             {
-                connection.Open();
+                await connection.OpenAsync();
             }
 
             var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
