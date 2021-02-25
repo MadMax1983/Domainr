@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>Mkss.Domainr.Core</PackageId>
-  </PropertyGroup>
-
-
-  <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Mkss.Domainr.Core</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
