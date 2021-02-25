@@ -13,10 +13,10 @@ namespace Domainr.Core.Tests.TestDoubles
             : base(new TestAggregateRootId(serializedAggregateRootId))
         {
         }
-        
-        protected override TestAggregateRootId CreateAggregateRootId(string serializedAggregateRootId)
+
+        protected override TestAggregateRootId DeserializeId(string serializedId)
         {
-            return new TestAggregateRootId(serializedAggregateRootId);
+            return new TestAggregateRootId(serializedId);
         }
 
         public void ExecuteSomeAction()
