@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.Sql
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.SqlServer", "Mkss.Domainr.EventStore.SqlServer\Mkss.Domainr.EventStore.SqlServer.csproj", "{6E69944B-1378-4A81-8A2F-EB1396512F26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.Sql.DependencyInjection", "Mkss.Domainr.EventStore.Sql.DependencyInjection\Mkss.Domainr.EventStore.Sql.DependencyInjection.csproj", "{95B8D411-97DF-42E3-82D9-1F78B514D418}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.Serializers.DependencyInjection", "Mkss.Domainr.EventStore.Serializers.DependencyInjection\Mkss.Domainr.EventStore.Serializers.DependencyInjection.csproj", "{70814807-23C2-4417-8791-51FA3CEF6E9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +105,14 @@ Global
 		{6E69944B-1378-4A81-8A2F-EB1396512F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E69944B-1378-4A81-8A2F-EB1396512F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E69944B-1378-4A81-8A2F-EB1396512F26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
