@@ -3,37 +3,41 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer", "Domainr.EventStore.SqlServer\Domainr.EventStore.SqlServer.csproj", "{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.SqlServer.Cmd", "Mkss.Domainr.EventStore.SqlServer.Cmd\Mkss.Domainr.EventStore.SqlServer.Cmd.csproj", "{0B668C45-6465-431D-8992-00A6417A0E6B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer.Cmd", "Domainr.EventStore.SqlServer.Cmd\Domainr.EventStore.SqlServer.Cmd.csproj", "{0B668C45-6465-431D-8992-00A6417A0E6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Postgresql", "Mkss.Domainr.EventStore.Postgresql\Mkss.Domainr.EventStore.Postgresql.csproj", "{14270B79-EA2A-427D-AB07-480F91E6375D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Postgresql", "Domainr.EventStore.Postgresql\Domainr.EventStore.Postgresql.csproj", "{14270B79-EA2A-427D-AB07-480F91E6375D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.MySql", "Mkss.Domainr.EventStore.MySql\Mkss.Domainr.EventStore.MySql.csproj", "{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.MySql", "Domainr.EventStore.MySql\Domainr.EventStore.MySql.csproj", "{7C8E9AE4-E58F-4E70-889D-6EC81C0D35C1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Oracle", "Domainr.EventStore.Oracle\Domainr.EventStore.Oracle.csproj", "{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sql", "Domainr.EventStore.Sql\Domainr.EventStore.Sql.csproj", "{5D05E06F-350C-4BC1-96E9-D7E73694AB92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Oracle", "Mkss.Domainr.EventStore.Oracle\Mkss.Domainr.EventStore.Oracle.csproj", "{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F9A7471-2909-4BDC-BA68-9AEB829975D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Serializers", "Domainr.EventStore.Serializers\Domainr.EventStore.Serializers.csproj", "{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Serializers", "Mkss.Domainr.EventStore.Serializers\Mkss.Domainr.EventStore.Serializers.csproj", "{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Serializers.Tests", "Domainr.EventStore.Serializers.Tests\Domainr.EventStore.Serializers.Tests.csproj", "{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Serializers.Tests", "Mkss.Domainr.EventStore.Serializers.Tests\Mkss.Domainr.EventStore.Serializers.Tests.csproj", "{5E3DF35A-1C4A-459F-B95C-0E9EA55351A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sqlite", "Domainr.EventStore.Sqlite\Domainr.EventStore.Sqlite.csproj", "{60ABEB1F-2527-4C45-87C7-D6AA5F2955DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Sqlite", "Mkss.Domainr.EventStore.Sqlite\Mkss.Domainr.EventStore.Sqlite.csproj", "{60ABEB1F-2527-4C45-87C7-D6AA5F2955DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.SqlServer.Tests", "Domainr.EventStore.SqlServer.Tests\Domainr.EventStore.SqlServer.Tests.csproj", "{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.SqlServer.Tests", "Mkss.Domainr.EventStore.SqlServer.Tests\Mkss.Domainr.EventStore.SqlServer.Tests.csproj", "{4B10E32A-6B43-45C3-B1C9-82CF39B6FBEC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Sql.Tests", "Domainr.EventStore.Sql.Tests\Domainr.EventStore.Sql.Tests.csproj", "{55877F0D-C094-411F-8BCF-48E66E40CE81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Sql.Tests", "Mkss.Domainr.EventStore.Sql.Tests\Mkss.Domainr.EventStore.Sql.Tests.csproj", "{55877F0D-C094-411F-8BCF-48E66E40CE81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.InMemory", "Domainr.EventStore.InMemory\Domainr.EventStore.InMemory.csproj", "{8AA04EA5-1546-4AFE-82D8-4625D7B3A6B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.InMemory", "Mkss.Domainr.EventStore.InMemory\Mkss.Domainr.EventStore.InMemory.csproj", "{8AA04EA5-1546-4AFE-82D8-4625D7B3A6B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.InMemory.Tests", "Domainr.EventStore.InMemory.Tests\Domainr.EventStore.InMemory.Tests.csproj", "{81269C19-E6CB-4C62-9A18-BE639BE6B5B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.InMemory.Tests", "Mkss.Domainr.EventStore.InMemory.Tests\Mkss.Domainr.EventStore.InMemory.Tests.csproj", "{81269C19-E6CB-4C62-9A18-BE639BE6B5B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Mongo", "Domainr.EventStore.Mongo\Domainr.EventStore.Mongo.csproj", "{E839303E-3ED5-459B-BE05-AC125E6F5518}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Mongo", "Mkss.Domainr.EventStore.Mongo\Mkss.Domainr.EventStore.Mongo.csproj", "{E839303E-3ED5-459B-BE05-AC125E6F5518}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domainr.EventStore.Mongo.Tests", "Domainr.EventStore.Mongo.Tests\Domainr.EventStore.Mongo.Tests.csproj", "{BB5F2469-1B98-4AB1-9CBF-E347F7C6F291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mkss.Domainr.EventStore.Mongo.Tests", "Mkss.Domainr.EventStore.Mongo.Tests\Mkss.Domainr.EventStore.Mongo.Tests.csproj", "{BB5F2469-1B98-4AB1-9CBF-E347F7C6F291}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.Sql", "Mkss.Domainr.EventStore.Sql\Mkss.Domainr.EventStore.Sql.csproj", "{CD9FCA96-AF89-49A6-8951-E76D7272AC2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.SqlServer", "Mkss.Domainr.EventStore.SqlServer\Mkss.Domainr.EventStore.SqlServer.csproj", "{6E69944B-1378-4A81-8A2F-EB1396512F26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.Sql.DependencyInjection", "Mkss.Domainr.EventStore.Sql.DependencyInjection\Mkss.Domainr.EventStore.Sql.DependencyInjection.csproj", "{95B8D411-97DF-42E3-82D9-1F78B514D418}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mkss.Domainr.EventStore.Serializers.DependencyInjection", "Mkss.Domainr.EventStore.Serializers.DependencyInjection\Mkss.Domainr.EventStore.Serializers.DependencyInjection.csproj", "{70814807-23C2-4417-8791-51FA3CEF6E9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +45,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8304F40-13C1-42D7-BA6B-BE7F4D7EFABC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B668C45-6465-431D-8992-00A6417A0E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B668C45-6465-431D-8992-00A6417A0E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,10 +61,6 @@ Global
 		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E6B675C-3845-40C2-ADA2-9C7128FBAC67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D05E06F-350C-4BC1-96E9-D7E73694AB92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E38CC0D1-6ED5-4F72-AC49-52A07B75DF63}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -101,6 +97,22 @@ Global
 		{BB5F2469-1B98-4AB1-9CBF-E347F7C6F291}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB5F2469-1B98-4AB1-9CBF-E347F7C6F291}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB5F2469-1B98-4AB1-9CBF-E347F7C6F291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD9FCA96-AF89-49A6-8951-E76D7272AC2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD9FCA96-AF89-49A6-8951-E76D7272AC2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD9FCA96-AF89-49A6-8951-E76D7272AC2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD9FCA96-AF89-49A6-8951-E76D7272AC2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E69944B-1378-4A81-8A2F-EB1396512F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E69944B-1378-4A81-8A2F-EB1396512F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E69944B-1378-4A81-8A2F-EB1396512F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E69944B-1378-4A81-8A2F-EB1396512F26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B8D411-97DF-42E3-82D9-1F78B514D418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70814807-23C2-4417-8791-51FA3CEF6E9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
