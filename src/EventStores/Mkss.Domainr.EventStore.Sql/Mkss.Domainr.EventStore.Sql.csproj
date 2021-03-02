@@ -15,19 +15,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\SqlScripts\GetByAggregateRootId.sql">
+    <None Remove="Data\SqlScripts\GetByAggregateRootId.sql" />
+    <EmbeddedResource Include="Data\SqlScripts\GetByAggregateRootId.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\SqlScripts\Initialize.sql">
+    </EmbeddedResource>
+    <None Remove="Data\SqlScripts\Initialize.sql" />
+    <EmbeddedResource Include="Data\SqlScripts\Initialize.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\SqlScripts\Save.sql">
+    </EmbeddedResource>
+    <None Remove="Data\SqlScripts\Save.sql" />
+    <EmbeddedResource Include="Data\SqlScripts\Save.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Mkss.Domainr.EventStore.Serializers\Mkss.Domainr.EventStore.Serializers.csproj" />
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
