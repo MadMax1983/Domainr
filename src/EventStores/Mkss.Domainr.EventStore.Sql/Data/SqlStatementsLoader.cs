@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Caching;
 
 namespace Domainr.EventStore.Sql.Data
@@ -13,7 +14,11 @@ namespace Domainr.EventStore.Sql.Data
 
         public void LoadScripts()
         {
-            var currentDirPath = Directory.GetCurrentDirectory();
+            var executingAssembly = Assembly.GetExecutingAssembly();
+
+            var executingAssemblyFileInfo = new FileInfo(executingAssembly.Location);
+            
+            var currentDirPath = executingAssemblyFileInfo.DirectoryName;
 
             var sqlFilesPath = Path.Combine(currentDirPath, "Data\\SqlScripts");
 
