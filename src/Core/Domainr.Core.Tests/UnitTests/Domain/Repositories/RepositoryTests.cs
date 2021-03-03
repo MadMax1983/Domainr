@@ -131,7 +131,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             var repository = new TestRepository(_mockConcurrencyResolver.Object, _mockEventStore.Object);
 
             // Act
-            Func<Task> act = async () => await repository.SaveAsync(null, Constants.INITIAL_VERSION);
+            Func<Task> act = async () => await repository.SaveAsync(null);
 
             // Assert
             act.Should()
@@ -154,7 +154,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             var expectedExceptionMessage = string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id, aggregateRoot.Version);
 
             // Act
-            Func<Task> act = async () => await repository.SaveAsync(aggregateRoot, Constants.INITIAL_VERSION);
+            Func<Task> act = async () => await repository.SaveAsync(aggregateRoot);
 
             // Assert
             act.Should()
@@ -245,7 +245,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             // Act
             aggregateRoot.ExecuteSomeAction();
 
-            async Task Act() => await repository.SaveAsync(aggregateRoot, aggregateRootVersion);
+            async Task Act() => await repository.SaveAsync(aggregateRoot);
 
             // Assert
             assert(Act);

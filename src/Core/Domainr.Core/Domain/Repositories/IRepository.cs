@@ -10,6 +10,6 @@ namespace Domainr.Core.Domain.Repositories
     {
         Task<TAggregateRoot> GetByIdAsync(TAggregateRootId id, CancellationToken cancellationToken = default);
 
-        Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken = default);
+        Task SaveAsync(TAggregateRoot aggregateRoot, CancellationToken cancellationToken = default);
     }
 }
