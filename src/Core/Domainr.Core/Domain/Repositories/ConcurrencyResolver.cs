@@ -7,6 +7,7 @@ using Domainr.Core.Resources;
 
 namespace Domainr.Core.Domain.Repositories
 {
+    [Obsolete("Concurrency check should be moved to an event store implementation, with default behavior of throwing AggregateRootConcurrencyException")]
     public sealed class ConcurrencyResolver
         : IConcurrencyResolver
     {

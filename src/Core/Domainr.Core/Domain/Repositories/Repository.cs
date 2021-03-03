@@ -15,15 +15,11 @@ namespace Domainr.Core.Domain.Repositories
         where TAggregateRoot : AggregateRoot<TAggregateRootId>, new()
         where TAggregateRootId : class, IAggregateRootId
     {
-        protected Repository(IConcurrencyResolver concurrencyResolver, IEventStore eventStore)
+        protected Repository(IEventStore eventStore)
         {
-            ConcurrencyResolver = concurrencyResolver;
-
             EventStore = eventStore;
         }
 
-        protected IConcurrencyResolver ConcurrencyResolver { get; }
-        
         protected IEventStore EventStore { get; }
 
         public virtual async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId, CancellationToken cancellationToken = default)
@@ -56,32 +52,9 @@ namespace Domainr.Core.Domain.Repositories
 
             var aggregateRootVersion = aggregateRoot.Version;
 
-            var concurrentEvents = await GetConcurrentEventsAsync(aggregateRoot.Id, aggregateRoot.Version, cancellationToken);
-            if (concurrentEvents.Any())
-            {
-                CheckConcurrency(concurrentEvents, uncommittedEvents, aggregateRoot.Id, aggregateRoot.Version);
-
-                aggregateRootVersion = concurrentEvents.Max(pe => pe.Version);
-            }
-
             var committedEvents = aggregateRoot.CommitChanges(aggregateRootVersion);
 
             await EventStore.SaveAsync(committedEvents, cancellationToken);
-        }
-
-        protected virtual async Task<IReadOnlyCollection<Event>> GetConcurrentEventsAsync(TAggregateRootId aggregateRootId, long expectedVersion, CancellationToken cancellationToken)
-        {
-            return await EventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), expectedVersion, cancellationToken);
-        }
-
-        protected virtual void CheckConcurrency(IEnumerable<Event> concurrentEvents, IEnumerable<Event> uncommittedEvents, TAggregateRootId aggregateRootId, long aggregateRootVersion)
-        {
-            var concurrentEventTypes = concurrentEvents.Select(pe => pe.GetType()).ToList();
-
-            if (uncommittedEvents.Any(uncommittedEvent => ConcurrencyResolver.ConflictsWith(uncommittedEvent.GetType(), concurrentEventTypes)))
-            {
-                throw new ConcurrencyException(string.Format(ExceptionResources.AggregateConcurrencyFound, aggregateRootId, aggregateRootVersion));
-            }
         }
     }
 }
