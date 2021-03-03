@@ -4,7 +4,7 @@ using Domainr.Core.EventSourcing.Abstraction;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Domainr.EventStore.Serializers
+namespace Domainr.EventStore.Sql.Serializers
 {
     public class JsonEventDataSerializer
         : IEventDataSerializer<string>

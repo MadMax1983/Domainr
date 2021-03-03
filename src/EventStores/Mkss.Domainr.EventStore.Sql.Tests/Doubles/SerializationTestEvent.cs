@@ -6,11 +6,11 @@ using Newtonsoft.Json;
 namespace Domainr.EventStore.Serializers.Tests.Doubles
 {
     [Serializable]
-    internal sealed class TestEvent
+    internal sealed class SerializationTestEvent
         : Event
     {
         [JsonConstructor]
-        public TestEvent(
+        public SerializationTestEvent(
             string aggregateRootId,
             string stringProp,
             int intProp,

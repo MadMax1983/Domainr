@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Serialization.Formatters.Binary;
-using Domainr.EventStore.Serializers.ByteArray;
+using Domainr.EventStore.Sql.Serializers.ByteArray;
 using NUnit.Framework;
 
-namespace Domainr.EventStore.Serializers.Tests.UnitTests
+namespace Domainr.EventStore.Sql.Tests.UnitTests.Serializers
 {
     [TestFixture]
     public sealed class ByteArraySerializerTests

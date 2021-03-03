@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Domainr.EventStore.Sql.Serializers;
+using NUnit.Framework;
 
-namespace Domainr.EventStore.Serializers.Tests.UnitTests
+namespace Domainr.EventStore.Sql.Tests.UnitTests.Serializers
 {
     [TestFixture]
     public sealed class JsonEventDataSerializerTests

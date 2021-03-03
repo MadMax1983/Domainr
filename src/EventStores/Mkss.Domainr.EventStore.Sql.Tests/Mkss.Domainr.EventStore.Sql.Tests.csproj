@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Mkss.Domainr.EventStore.Sql\Mkss.Domainr.EventStore.Sql.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UnitTests" />
-  </ItemGroup>
-
 </Project>

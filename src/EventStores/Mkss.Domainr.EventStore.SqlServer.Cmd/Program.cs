@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
+using Domainr.EventStore.Sql.Serializers;
 
 namespace Domainr.EventStore.SqlServer.Cmd
 {

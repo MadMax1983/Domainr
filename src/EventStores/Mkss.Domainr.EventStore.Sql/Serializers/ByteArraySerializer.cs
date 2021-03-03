@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using Domainr.Core.EventSourcing.Abstraction;
 using Newtonsoft.Json.Serialization;
 
-namespace Domainr.EventStore.Serializers.ByteArray
+namespace Domainr.EventStore.Sql.Serializers.ByteArray
 {
     public class ByteArraySerializer
         : IEventDataSerializer<byte[]>
