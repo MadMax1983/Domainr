@@ -41,7 +41,7 @@ namespace Domainr.Core.Domain.Repositories
             return aggregateRoot;
         }
 
-        public virtual async Task SaveAsync(TAggregateRoot aggregateRoot, long expectedVersion, CancellationToken cancellationToken = default)
+        public virtual async Task SaveAsync(TAggregateRoot aggregateRoot, CancellationToken cancellationToken = default)
         {
             if (aggregateRoot == null)
             {
@@ -56,7 +56,7 @@ namespace Domainr.Core.Domain.Repositories
 
             var aggregateRootVersion = aggregateRoot.Version;
 
-            var concurrentEvents = await GetConcurrentEventsAsync(aggregateRoot.Id, expectedVersion, cancellationToken);
+            var concurrentEvents = await GetConcurrentEventsAsync(aggregateRoot.Id, aggregateRoot.Version, cancellationToken);
             if (concurrentEvents.Any())
             {
                 CheckConcurrency(concurrentEvents, uncommittedEvents, aggregateRoot.Id, aggregateRoot.Version);
@@ -71,9 +71,7 @@ namespace Domainr.Core.Domain.Repositories
 
         protected virtual async Task<IReadOnlyCollection<Event>> GetConcurrentEventsAsync(TAggregateRootId aggregateRootId, long expectedVersion, CancellationToken cancellationToken)
         {
-            return expectedVersion <= Constants.INITIAL_VERSION
-                ? new Event[0]
-                : await EventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), expectedVersion, cancellationToken);
+            return await EventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), expectedVersion, cancellationToken);
         }
 
         protected virtual void CheckConcurrency(IEnumerable<Event> concurrentEvents, IEnumerable<Event> uncommittedEvents, TAggregateRootId aggregateRootId, long aggregateRootVersion)
@@ -82,7 +80,7 @@ namespace Domainr.Core.Domain.Repositories
 
             if (uncommittedEvents.Any(uncommittedEvent => ConcurrencyResolver.ConflictsWith(uncommittedEvent.GetType(), concurrentEventTypes)))
             {
-                throw new ConcurrencyException(string.Format(ExceptionResources.AggregateConcurrencyFound, aggregateRootId.ToString(), aggregateRootVersion));
+                throw new ConcurrencyException(string.Format(ExceptionResources.AggregateConcurrencyFound, aggregateRootId, aggregateRootVersion));
             }
         }
     }
