@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Domainr.EventStore.Serializers.Tests.Doubles;
+using Domainr.EventStore.Sql.Serializers;
 using FluentAssertions;
 
-namespace Domainr.EventStore.Serializers.Tests.UnitTests
+namespace Domainr.EventStore.Sql.Tests.UnitTests.Serializers
 {
     public abstract class SerializerTest<TEventDataSerializationType>
     {
@@ -20,7 +21,7 @@ namespace Domainr.EventStore.Serializers.Tests.UnitTests
         public void TestSerializer()
         {
             // Arrange
-            var @event = new TestEvent(
+            var @event = new SerializationTestEvent(
                 Guid.NewGuid().ToString(),
                 STRING_PROP_1_VALUE,
                 123,
@@ -35,7 +36,7 @@ namespace Domainr.EventStore.Serializers.Tests.UnitTests
             // Act
             var serializedEvent = _eventSerializer.Serialize(@event);
 
-            var deserializedEvent = (TestEvent)_eventSerializer.Deserialize(serializedEvent, @event.GetType().AssemblyQualifiedName);
+            var deserializedEvent = (SerializationTestEvent)_eventSerializer.Deserialize(serializedEvent, @event.GetType().AssemblyQualifiedName);
 
             // Assert
             deserializedEvent.AggregateRootId

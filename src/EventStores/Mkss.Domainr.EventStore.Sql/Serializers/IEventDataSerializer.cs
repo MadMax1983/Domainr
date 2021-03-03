@@ -1,6 +1,6 @@
 ﻿using Domainr.Core.EventSourcing.Abstraction;
 
-namespace Domainr.EventStore.Serializers
+namespace Domainr.EventStore.Sql.Serializers
 {
     public interface IEventDataSerializer<TEventDataSerializationType>
     {

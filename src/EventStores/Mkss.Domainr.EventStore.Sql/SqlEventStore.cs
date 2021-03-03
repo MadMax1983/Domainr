@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Dapper;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Core.Infrastructure;
-using Domainr.EventStore.Serializers;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
 using Domainr.EventStore.Sql.Factories;
 using Domainr.EventStore.Sql.Models;
+using Domainr.EventStore.Sql.Serializers;
 
 namespace Domainr.EventStore.Sql
 {
