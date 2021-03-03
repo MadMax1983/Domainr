@@ -50,9 +50,7 @@ namespace Domainr.Core.Domain.Repositories
                 throw new AggregateRootException(string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id, aggregateRoot.Version));
             }
 
-            var aggregateRootVersion = aggregateRoot.Version;
-
-            var committedEvents = aggregateRoot.CommitChanges(aggregateRootVersion);
+            var committedEvents = aggregateRoot.CommitChanges(aggregateRoot.Version);
 
             await EventStore.SaveAsync(committedEvents, cancellationToken);
         }
