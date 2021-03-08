@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AggregateConcurrencyFound" xml:space="preserve">
-    <value>A concurrency between events was found while saving aggregate root changes. Aggregate root identifier: {0}, version: {1}.</value>
-  </data>
-  <data name="AggregateRootVersionIsInvalid" xml:space="preserve">
-    <value>Aggregate root version must be greater or equal to {0} but was {1}.</value>
-  </data>
-  <data name="CannotChangeAggregateRootId" xml:space="preserve">
-    <value>Aggregate root identifier can be initialized only once.</value>
-  </data>
-  <data name="EmptyAggregateRootEventStream" xml:space="preserve">
-    <value>Aggregate root events stream is empty.</value>
-  </data>
-  <data name="EmptyAggregateRootId" xml:space="preserve">
-    <value>Aggregate root identifier cannot be null or empty string.</value>
-  </data>
-  <data name="InvalidConflictEventTypes" xml:space="preserve">
-    <value>All conflicts with type must be of type {0}.</value>
-  </data>
-  <data name="InvalidEventType" xml:space="preserve">
-    <value>Event definition must be of type {0}.</value>
-  </data>
-  <data name="NoEventsToCommit" xml:space="preserve">
-    <value>A concurrency was found while saving aggregate root changes. Aggregate root identifier: {0}, version: {1}.</value>
-  </data>
-  <data name="NullAggregateRootId" xml:space="preserve">
-    <value>Aggregate root identifier cannot be null.</value>
-  </data>
 </root>

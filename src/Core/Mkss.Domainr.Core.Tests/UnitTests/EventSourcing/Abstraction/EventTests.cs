@@ -56,8 +56,7 @@ namespace Domainr.Core.Tests.UnitTests.EventSourcing.Abstraction
             // Assert
             action
                 .Should()
-                .Throw<AggregateRootIdException>()
-                .WithMessage(ExceptionResources.EmptyAggregateRootId);
+                .Throw<AggregateRootIdException>();
         }
 
         [Test]
@@ -89,8 +88,6 @@ namespace Domainr.Core.Tests.UnitTests.EventSourcing.Abstraction
             // Arrange
             long aggregateRootVersion = -2;
 
-            var expectedExceptionMessage = string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, aggregateRootVersion);
-
             // Act
             var @event = new TestEvent1(AGGREGATE_ROOT_ID, true);
 
@@ -99,8 +96,7 @@ namespace Domainr.Core.Tests.UnitTests.EventSourcing.Abstraction
             // Assert
             action
                 .Should()
-                .Throw<AggregateRootVersionException>()
-                .WithMessage(expectedExceptionMessage);
+                .Throw<AggregateRootVersionException>();
         }
     }
 }

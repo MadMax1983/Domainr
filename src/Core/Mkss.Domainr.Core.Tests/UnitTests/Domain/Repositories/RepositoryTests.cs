@@ -26,17 +26,11 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
 
         private readonly ICollection<Event> _events = new List<Event>();
 
-        private readonly Mock<IConcurrencyResolver> _mockConcurrencyResolver = new Mock<IConcurrencyResolver>();
         private readonly Mock<IEventStore> _mockEventStore = new Mock<IEventStore>();
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            _mockConcurrencyResolver
-                .Setup(m => m.ConflictsWith(It.IsAny<Type>(), It.IsAny<IReadOnlyCollection<Type>>()))
-                .Returns(
-                    (Type type, IReadOnlyCollection<Type> types) => types.Contains(type));
-
             _mockEventStore.Setup(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
                     (string aggregateRootId, long fromVersion, CancellationToken cancellationToken) => _events
@@ -46,7 +40,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
 
             _mockEventStore
                 .Setup(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .Returns((IReadOnlyCollection<Event> events, CancellationToken cancellationToken) =>
+                .Returns((IReadOnlyCollection<Event> events, string  metadata, CancellationToken cancellationToken) =>
                 {
                     foreach (var @event in events)
                     {
@@ -75,7 +69,6 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         {
             _events.Clear();
 
-            _mockConcurrencyResolver.Invocations.Clear();
             _mockEventStore.Invocations.Clear();
         }
 
@@ -151,15 +144,12 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
 
             aggregateRoot.LoadFromStream(_events.ToList());
 
-            var expectedExceptionMessage = string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id, aggregateRoot.Version);
-
             // Act
             Func<Task> act = async () => await repository.SaveAsync(aggregateRoot);
 
             // Assert
             act.Should()
-                .Throw<AggregateRootException>()
-                .WithMessage(expectedExceptionMessage);
+                .Throw<AggregateRootException>();
 
             _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
         }

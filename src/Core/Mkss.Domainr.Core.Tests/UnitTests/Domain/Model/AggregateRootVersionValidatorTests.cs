@@ -17,7 +17,6 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             const long AGGREGATE_ROOT_VERSION = Constants.INITIAL_VERSION - 1;
 
             // Arrange
-            var expectedExceptionMessage = string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, AGGREGATE_ROOT_VERSION);
 
             // Act
             Action action = () => AggregateRootVersionValidator.Validate(AGGREGATE_ROOT_VERSION);
@@ -25,8 +24,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             // Assert
             action
                 .Should()
-                .Throw<AggregateRootVersionException>()
-                .WithMessage(expectedExceptionMessage);
+                .Throw<AggregateRootVersionException>();
         }
 
         [TestCase(Constants.INITIAL_VERSION)]
@@ -35,7 +33,6 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
         public void GIVEN_invalid_aggregate_root_version_WHEN_validating_aggregate_root_version_THEN_throws_exception(long aggregateRootVersion)
         {
             // Arrange
-            var expectedExceptionMessage = string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, aggregateRootVersion);
 
             // Act
             Action action = () => AggregateRootVersionValidator.Validate(aggregateRootVersion);

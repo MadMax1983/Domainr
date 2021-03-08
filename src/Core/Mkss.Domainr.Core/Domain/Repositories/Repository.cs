@@ -47,7 +47,7 @@ namespace Domainr.Core.Domain.Repositories
             var uncommittedEvents = aggregateRoot.GetUncommittedChanges();
             if (!uncommittedEvents.Any())
             {
-                throw new AggregateRootException(string.Format(ExceptionResources.NoEventsToCommit, aggregateRoot.Id, aggregateRoot.Version));
+                throw new AggregateRootException($"A concurrency was found while saving aggregate root changes. Aggregate root identifier: {aggregateRoot.Id}, version: {aggregateRoot.Version}.");
             }
 
             var committedEvents = aggregateRoot.CommitChanges(aggregateRoot.Version);

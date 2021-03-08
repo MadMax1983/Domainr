@@ -28,7 +28,7 @@ namespace Domainr.Core.EventSourcing.Abstraction
         {
             if (string.IsNullOrWhiteSpace(aggregateRootId))
             {
-                throw new AggregateRootIdException(ExceptionResources.EmptyAggregateRootId);
+                throw new AggregateRootIdException("Aggregate root identifier cannot be null or empty string.");
             }
 
             AggregateRootId = aggregateRootId;
