@@ -3,18 +3,19 @@ using Domainr.EventStore.Sql;
 using Domainr.EventStore.Sql.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Mkss.Domainr.EventStore.Sql.DependencyInjection
 {
     public static class SqlEventStoreModule
     {
-        public static IServiceCollection AddSqlEventStore(this IServiceCollection services)
+        public static IServiceCollection AddSqlEventStore<TEventDataSerializationType>(this IServiceCollection services)
         {
-            services.TryAddSingleton<IEventStore, SqlEventStore<string>>();
-            services.TryAddSingleton<IEventStoreInitializer, SqlEventStore<string>>();
+            services.AddSingleton<SqlEventStore<TEventDataSerializationType>>();
             
-            services.TryAddSingleton<ISqlStatementsLoader, SqlStatementsLoader>();
+            services.AddSingleton<IEventStore, SqlEventStore<TEventDataSerializationType>>(serviceProvider => serviceProvider.GetRequiredService<SqlEventStore<TEventDataSerializationType>>());
+            services.AddSingleton<IEventStoreInitializer, SqlEventStore<TEventDataSerializationType>>(serviceProvider => serviceProvider.GetRequiredService<SqlEventStore<TEventDataSerializationType>>());
+            
+            services.AddSingleton<ISqlStatementsLoader, SqlStatementsLoader>();
             
             return services;
         }

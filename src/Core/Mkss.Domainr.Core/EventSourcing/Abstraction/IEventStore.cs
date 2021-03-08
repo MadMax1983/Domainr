@@ -8,6 +8,6 @@ namespace Domainr.Core.EventSourcing.Abstraction
     {
         Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion, CancellationToken cancellationToken = default);
 
-        Task SaveAsync(IReadOnlyCollection<Event> events, CancellationToken cancellationToken = default);
+        Task SaveAsync(IReadOnlyCollection<Event> events, string eventMetadata = default, CancellationToken cancellationToken = default);
     }
 }

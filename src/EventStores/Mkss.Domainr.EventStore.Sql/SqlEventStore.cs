@@ -77,6 +77,9 @@ namespace Domainr.EventStore.Sql
 
                 var sql = SqlStatementsLoader[nameof(SaveAsync)];
 
+                var streamId = Guid.NewGuid();
+                var timestamp = DateTime.UtcNow;
+
                 foreach (var @event in events)
                 {
                     var eventEntity = new
