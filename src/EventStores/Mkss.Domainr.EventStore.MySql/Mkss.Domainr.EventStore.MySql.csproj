@@ -6,13 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mkss.Domainr.Core" Version="1.0.30" />
+    <PackageReference Include="Mkss.Domainr.Core" Version="1.0.34" />
     <PackageReference Include="MySql.Data" Version="8.0.21" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Mkss.Domainr.EventStore.SqlServer\Mkss.Domainr.EventStore.SqlServer.csproj" />
-    <ProjectReference Include="..\Mkss.Domainr.EventStore.Sql\Mkss.Domainr.EventStore.Sql.csproj" />
   </ItemGroup>
 
 </Project>

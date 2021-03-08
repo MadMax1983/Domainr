@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Domainr.Core.EventSourcing.Abstraction;
+using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
@@ -15,25 +16,25 @@ using Domainr.EventStore.Sql.Serializers;
 
 namespace Domainr.EventStore.Sql
 {
-    public class SqlEventStore<TSerializationType>
+    public abstract class SqlEventStore<TSerializationType>
         : IEventStore,
           IEventStoreInitializer
     {
-        private readonly string _connectionString;
-        
-        public SqlEventStore(
+        protected SqlEventStore(
             EventStoreSettings settings,
             ISqlStatementsLoader sqlStatementsLoader,
             IDbConnectionFactory connectionFactory,
             IEventDataSerializer<TSerializationType> eventDataSerializer)
         {
-            _connectionString = settings.ConnectionStrings["EventStore"];
+            ConnectionString = settings.ConnectionStrings["EventStore"];
 
             SqlStatementsLoader = sqlStatementsLoader;
             ConnectionFactory = connectionFactory;
 
             EventDataSerializer = eventDataSerializer;
         }
+
+        protected string ConnectionString { get; }
 
         protected ISqlStatementsLoader SqlStatementsLoader { get; }
         
@@ -43,8 +44,13 @@ namespace Domainr.EventStore.Sql
 
         public virtual async Task<IReadOnlyCollection<Event>> GetByAggregateRootIdAsync(string aggregateRootId, long fromVersion = Constants.INITIAL_VERSION, CancellationToken cancellationToken = default)
         {
-            return await ExecuteSqlStatement(async (connection, transaction) =>
+            using (var connection = ConnectionFactory.Create(ConnectionString))
             {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+            
                 var inputParams = new
                 {
                     AggregateRootId = aggregateRootId,
@@ -56,7 +62,6 @@ namespace Domainr.EventStore.Sql
                 var commandDefinition = new CommandDefinition(
                     sql,
                     inputParams,
-                    transaction,
                     cancellationToken: cancellationToken);
 
                 var eventEntities = await connection.QueryAsync<EventEntity<TSerializationType>>(commandDefinition);
@@ -65,30 +70,39 @@ namespace Domainr.EventStore.Sql
                     .Select(eventEntity => EventDataSerializer.Deserialize(eventEntity.Data, eventEntity.Type))
                     .ToList();
 
-                return events;
-            });
+                return events;   
+            }
         }
 
-        public virtual async Task SaveAsync(IReadOnlyCollection<Event> events, CancellationToken cancellationToken = default)
+        public virtual async Task SaveAsync(IReadOnlyCollection<Event> events, string eventMetadata = default, CancellationToken cancellationToken = default)
         {
-            await ExecuteSqlStatement(async (connection, transaction) =>
+            IDbConnection connection = null;
+            IDbTransaction transaction = null;
+
+            try
             {
-                var result = 0;
-
+                connection = ConnectionFactory.Create(ConnectionString);
+                
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                
+                transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+                
                 var sql = SqlStatementsLoader[nameof(SaveAsync)];
-
-                var streamId = Guid.NewGuid();
-                var timestamp = DateTime.UtcNow;
-
+                
                 foreach (var @event in events)
                 {
                     var eventEntity = new
                     {
-                        Id = Guid.NewGuid().ToString(),
                         Version = @event.Version,
                         AggregateRootId = @event.AggregateRootId,
+                        StreamId = Guid.NewGuid().ToString(),
+                        Timestamp = DateTime.UtcNow,
                         Type = @event.GetType().AssemblyQualifiedName,
-                        Data = EventDataSerializer.Serialize(@event)
+                        Data = EventDataSerializer.Serialize(@event),
+                        Metadata = eventMetadata
                     };
                     
                     var commandDefinition = new CommandDefinition(
@@ -97,56 +111,51 @@ namespace Domainr.EventStore.Sql
                         transaction,
                         cancellationToken: cancellationToken);
 
-                    result += await connection.ExecuteAsync(commandDefinition);
+                    await connection.ExecuteAsync(commandDefinition);
                 }
-
-                return result;
-            });
-        }
-
-        public virtual Task InitializeAsync()
-        {
-            return ExecuteSqlStatement(async (connection, transaction) =>
-            {
-                var sql = SqlStatementsLoader[nameof(InitializeAsync)];
                 
-                var commandDefinition = new CommandDefinition(
-                    sql,
-                    transaction: transaction);
-                
-                return await connection.ExecuteAsync(commandDefinition);
-            });
-        }
-
-        protected virtual async Task<TResult> ExecuteSqlStatement<TResult>(Func<IDbConnection, IDbTransaction, Task<TResult>> sqlFuncAsync)
-        {
-            var connection = ConnectionFactory.Create(_connectionString);
-            if (connection.State != ConnectionState.Open)
-            {
-                connection.Open();
-            }
-
-            var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
-
-            try
-            {
-                var result = await sqlFuncAsync(connection, transaction);
-
                 transaction.Commit();
-
-                return result;
             }
-            catch
+            catch (Exception ex)
             {
-                transaction.Rollback();
+                if (IsConcurrencyException(ex))
+                {
+                    throw new ConcurrencyException("A concurrency exception occured while processing event stream ", ex);
+                }
 
                 throw;
             }
             finally
             {
-                transaction.Dispose();
-                connection.Dispose();
+                transaction?.Dispose();
+                connection?.Dispose();
             }
         }
+
+        public virtual async Task InitializeAsync()
+        {
+            using (var connection = ConnectionFactory.Create(ConnectionString))
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                using (var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    var sql = SqlStatementsLoader[nameof(InitializeAsync)];
+                
+                    var commandDefinition = new CommandDefinition(
+                        sql,
+                        transaction: transaction);
+
+                    await connection.ExecuteAsync(commandDefinition);
+                
+                    transaction.Commit();
+                }
+            }
+        }
+
+        protected abstract bool IsConcurrencyException(Exception ex);
     }
 }
