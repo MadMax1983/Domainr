@@ -45,7 +45,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
                         .ToList());
 
             _mockEventStore
-                .Setup(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns((IReadOnlyCollection<Event> events, CancellationToken cancellationToken) =>
                 {
                     foreach (var @event in events)
@@ -138,7 +138,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
                 .Throw<AggregateRootNullException>()
                 .WithMessage(EXPECTED_EXCEPTION_MESSAGE);
 
-            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<CancellationToken>()), Times.Never());
+            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
                 .Throw<AggregateRootException>()
                 .WithMessage(expectedExceptionMessage);
 
-            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<CancellationToken>()), Times.Never());
+            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
         }
         
         [Test]
@@ -178,7 +178,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             await repository.SaveAsync(aggregateRoot);
 
             // Assert
-            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<CancellationToken>()), Times.Once());
+            _mockEventStore.Verify(m => m.SaveAsync(It.IsAny<IReadOnlyCollection<Event>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
         }
     }
 }

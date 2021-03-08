@@ -39,7 +39,7 @@ namespace Domainr.Core.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Domainr.Core.Resources.ExceptionResources", typeof(ExceptionResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Mkss.Domainr.Core.Resources.ExceptionResources", typeof(ExceptionResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

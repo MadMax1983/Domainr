@@ -37,7 +37,7 @@ namespace Domainr.Core.Domain.Repositories
             return aggregateRoot;
         }
 
-        public virtual async Task SaveAsync(TAggregateRoot aggregateRoot, CancellationToken cancellationToken = default)
+        public virtual async Task SaveAsync(TAggregateRoot aggregateRoot, string metadata = default, CancellationToken cancellationToken = default)
         {
             if (aggregateRoot == null)
             {
@@ -52,7 +52,7 @@ namespace Domainr.Core.Domain.Repositories
 
             var committedEvents = aggregateRoot.CommitChanges(aggregateRoot.Version);
 
-            await EventStore.SaveAsync(committedEvents, cancellationToken);
+            await EventStore.SaveAsync(committedEvents, metadata, cancellationToken);
         }
     }
 }

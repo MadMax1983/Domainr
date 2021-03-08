@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Mkss.Domainr.Core</PackageId>
-    <Version>1.0.22</Version>
     <Authors>Maciej Korzeniewski</Authors>
     <Company>MK Software Solutions</Company>
+    <RootNamespace>Domainr.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
