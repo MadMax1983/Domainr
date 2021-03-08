@@ -100,7 +100,7 @@ namespace Domainr.EventStore.Sql.Tests.IntegrationTests
                 events[i].SetVersion(i);
             }
 
-            var eventStore = new SqlEventStore<string>(
+            var eventStore = new TestSqlEventStore<string>(
                 _settings,
                 _mockSqlStatementsLoader.Object,
                 connectionFactory,
