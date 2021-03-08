@@ -19,10 +19,10 @@ namespace Domainr.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ExceptionResources {
+    internal class ExceptionResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -39,7 +39,7 @@ namespace Domainr.Core.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Mkss.Domainr.Core.Resources.ExceptionResources", typeof(ExceptionResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Domainr.Core.Resources.ExceptionResources", typeof(ExceptionResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,87 +57,6 @@ namespace Domainr.Core.Resources {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A concurrency between events was found while saving aggregate root changes. Aggregate root identifier: {0}, version: {1}..
-        /// </summary>
-        internal static string AggregateConcurrencyFound {
-            get {
-                return ResourceManager.GetString("AggregateConcurrencyFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aggregate root version must be greater or equal to {0} but was {1}..
-        /// </summary>
-        internal static string AggregateRootVersionIsInvalid {
-            get {
-                return ResourceManager.GetString("AggregateRootVersionIsInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aggregate root identifier can be initialized only once..
-        /// </summary>
-        internal static string CannotChangeAggregateRootId {
-            get {
-                return ResourceManager.GetString("CannotChangeAggregateRootId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aggregate root events stream is empty..
-        /// </summary>
-        internal static string EmptyAggregateRootEventStream {
-            get {
-                return ResourceManager.GetString("EmptyAggregateRootEventStream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aggregate root identifier cannot be null or empty string..
-        /// </summary>
-        internal static string EmptyAggregateRootId {
-            get {
-                return ResourceManager.GetString("EmptyAggregateRootId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All conflicts with type must be of type {0}..
-        /// </summary>
-        internal static string InvalidConflictEventTypes {
-            get {
-                return ResourceManager.GetString("InvalidConflictEventTypes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Event definition must be of type {0}..
-        /// </summary>
-        internal static string InvalidEventType {
-            get {
-                return ResourceManager.GetString("InvalidEventType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A concurrency was found while saving aggregate root changes. Aggregate root identifier: {0}, version: {1}..
-        /// </summary>
-        internal static string NoEventsToCommit {
-            get {
-                return ResourceManager.GetString("NoEventsToCommit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aggregate root identifier cannot be null..
-        /// </summary>
-        internal static string NullAggregateRootId {
-            get {
-                return ResourceManager.GetString("NullAggregateRootId", resourceCulture);
             }
         }
     }

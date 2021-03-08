@@ -10,7 +10,7 @@ namespace Domainr.Core.Domain.Model
         {
             if (aggregateRootVersion < Constants.INITIAL_VERSION)
             {
-                throw new AggregateRootVersionException(string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, aggregateRootVersion));
+                throw new AggregateRootVersionException($"Aggregate root version must be greater or equal to {Constants.INITIAL_VERSION} but was {aggregateRootVersion}.");
             }
         }
     }

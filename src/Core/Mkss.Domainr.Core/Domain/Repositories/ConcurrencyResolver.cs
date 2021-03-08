@@ -40,12 +40,12 @@ namespace Domainr.Core.Domain.Repositories
 
             if (!eventType.IsSubclassOf(defaultEventType))
             {
-                throw new InvalidEventTypeException(string.Format(ExceptionResources.InvalidEventType, defaultEventType.Name));
+                throw new InvalidEventTypeException($"Event definition must be of type {defaultEventType.Name}.");
             }
 
             if (conflictsWith.Any(c => !c.IsSubclassOf(defaultEventType)))
             {
-                throw new InvalidEventTypeException(string.Format(ExceptionResources.InvalidConflictEventTypes, defaultEventType.Name));
+                throw new InvalidEventTypeException($"All conflicts with type must be of type {defaultEventType.Name}.");
             }
 
             if (_conflictRegister.ContainsKey(eventType))

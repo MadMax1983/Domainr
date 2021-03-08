@@ -103,7 +103,7 @@ namespace Domainr.Core.Domain.Model
 
             if (!eventStream.Any())
             {
-                throw new EmptyEventStreamException(ExceptionResources.EmptyAggregateRootEventStream);
+                throw new EmptyEventStreamException("Aggregate root events stream is empty.");
             }
         }
 

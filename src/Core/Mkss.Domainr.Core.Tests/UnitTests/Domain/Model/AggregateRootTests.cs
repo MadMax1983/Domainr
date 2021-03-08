@@ -130,8 +130,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             // Assert
             action
                 .Should()
-                .Throw<EmptyEventStreamException>()
-                .WithMessage(ExceptionResources.EmptyAggregateRootEventStream);
+                .Throw<EmptyEventStreamException>();
 
             aggregateRoot.Id
                 .Should()
@@ -158,8 +157,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             // Assert
             action
                 .Should()
-                .Throw<AggregateRootVersionException>()
-                .WithMessage(string.Format(ExceptionResources.AggregateRootVersionIsInvalid, Constants.INITIAL_VERSION, INVALID_AGGREGATE_ROOT_VERSION));
+                .Throw<AggregateRootVersionException>();
         }
 
         [Test]
