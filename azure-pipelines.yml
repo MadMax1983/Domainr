@@ -12,10 +12,6 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-stage: Build
-  jobs:
-    job: Build
-
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'Run build'
