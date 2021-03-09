@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
 using Domainr.Core.EventSourcing.Abstraction;
+using Domainr.Core.Exceptions;
+using Domainr.Core.Infrastructure;
 using Domainr.EventStore.Sql.Configuration;
 using Domainr.EventStore.Sql.Data;
 using Domainr.EventStore.Sql.Factories;
@@ -24,47 +26,29 @@ namespace Domainr.EventStore.Sql.Tests.IntegrationTests
 
         private const string DROP_DATABASE_SQL_STATEMENT = "ALTER DATABASE [EventStoreTests] SET  SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [EventStoreTests]";
 
-        private const string INITIALIZE_DATABASE_SQL_STATEMENT = "CREATE TABLE [Events] ([Id] nvarchar(64) NOT NULL, [Version] bigint NOT NULL, [AggregateRootId] nvarchar(64) NOT NULL, [Type] nvarchar(512) NOT NULL, [Data] nvarchar(2048) NOT NULL)";
+        protected EventStoreSettings Settings { get; } = new EventStoreSettings();
 
-        private const string SAVE_SQL_STATEMENT = "INSERT INTO [Events] ([Id], [AggregateRootId], [Version], [Type], [Data]) VALUES (@Id, @AggregateRootId, @Version, @Type, @Data)";
+        protected ISqlStatementsLoader SqlStatementsLoader { get; } = new SqlStatementsLoader();
 
-        private const string GET_BY_AGGREGATE_ROOT_ID_SQL_STATEMENT = "SELECT [Type], [Data] FROM [Events] WHERE [AggregateRootId] = @AggregateRootId AND [Version] > @FromVersion";
-
-        private readonly EventStoreSettings _settings = new EventStoreSettings();
-
-        private readonly Mock<ISqlStatementsLoader> _mockSqlStatementsLoader = new Mock<ISqlStatementsLoader>();
-
-        private readonly Mock<IEventDataSerializer<string>> _mockEventDataSerializer = new Mock<IEventDataSerializer<string>>();
+        protected Mock<IEventDataSerializer<string>> MockEventDataSerializer { get; }= new Mock<IEventDataSerializer<string>>();
 
         protected virtual async Task OneTimeSetUpInternal(string initialConnectionString, string connectionString)
         {
-            _settings.ConnectionStrings = new Dictionary<string, string>
+            Settings.ConnectionStrings = new Dictionary<string, string>
             {
                 {"EventStoreInitialize", initialConnectionString},
                 {"EventStore", connectionString},
             };
+            
+            SqlStatementsLoader.LoadScripts();
 
-            await CreateDatabaseAsync<SqlConnection>(_settings.ConnectionStrings["EventStoreInitialize"]);
+            await CreateDatabaseAsync<SqlConnection>(Settings.ConnectionStrings["EventStoreInitialize"]);
 
-            _mockSqlStatementsLoader
-                .Setup(m => m[It.IsAny<string>()])
-                .Returns((string sqlName) =>
-                {
-                    if (sqlName.Equals("InitializeAsync"))
-                    {
-                        return INITIALIZE_DATABASE_SQL_STATEMENT;
-                    }
-
-                    return sqlName.Equals("SaveAsync")
-                        ? SAVE_SQL_STATEMENT
-                        : GET_BY_AGGREGATE_ROOT_ID_SQL_STATEMENT;
-                });
-
-            _mockEventDataSerializer
+            MockEventDataSerializer
                 .Setup(m => m.Serialize(It.IsAny<Event>()))
                 .Returns((Event @event) => JsonConvert.SerializeObject(@event));
 
-            _mockEventDataSerializer
+            MockEventDataSerializer
                 .Setup(m => m.Deserialize(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns((string jsonString, string type) =>
                 {
@@ -82,10 +66,32 @@ namespace Domainr.EventStore.Sql.Tests.IntegrationTests
 
         protected virtual async Task OneTimeTearDownInternal()
         {
-            await DropDatabaseAsync<SqlConnection>(_settings.ConnectionStrings["EventStoreInitialize"]);
+            await DropDatabaseAsync<SqlConnection>(Settings.ConnectionStrings["EventStoreInitialize"]);
         }
 
-        protected async Task ExecuteTest(IDbConnectionFactory connectionFactory)
+        protected async Task ExecuteConcurrencyCheckTest(IEventStoreInitializer eventStoreInitializer, IEventStore eventStore)
+        {
+            // Arrange
+            var events = new List<TestEvent>
+            {
+                new TestEvent("arid", "sp1"),
+                new TestEvent("arid", "sp2")
+            };
+
+            events[0].SetVersion(0);
+            events[1].SetVersion(0);
+
+            // Act
+            await eventStoreInitializer.InitializeAsync();
+
+            Func<Task> act = async () => await eventStore.SaveAsync(events);
+
+            // Assert
+            act.Should()
+                .Throw<ConcurrencyException>();
+        }
+
+        protected async Task ExecuteTest(IEventStoreInitializer eventStoreInitializer, IEventStore eventStore)
         {
             // Arrange
             var events = new List<TestEvent>
@@ -100,18 +106,12 @@ namespace Domainr.EventStore.Sql.Tests.IntegrationTests
                 events[i].SetVersion(i);
             }
 
-            var eventStore = new TestSqlEventStore<string>(
-                _settings,
-                _mockSqlStatementsLoader.Object,
-                connectionFactory,
-                _mockEventDataSerializer.Object);
-
             // Act
-            await eventStore.InitializeAsync();
+            await eventStoreInitializer.InitializeAsync();
 
             await eventStore.SaveAsync(events);
 
-            var queriedEvents = await eventStore.GetByAggregateRootIdAsync("arid");
+            var queriedEvents = await eventStore.GetByAggregateRootIdAsync("arid", Constants.INITIAL_VERSION);
 
             // Assert
             queriedEvents
@@ -135,7 +135,10 @@ namespace Domainr.EventStore.Sql.Tests.IntegrationTests
         protected virtual async Task ExecuteSqlStatementAsync<TDbConnection>(string connectionString, string sqlStatement)
             where TDbConnection : IDbConnection, new()
         {
-            using var connection = new TDbConnection { ConnectionString = connectionString };
+            using var connection = new TDbConnection
+            {
+                ConnectionString = connectionString
+            };
 
             await connection.ExecuteAsync(sqlStatement);
         }

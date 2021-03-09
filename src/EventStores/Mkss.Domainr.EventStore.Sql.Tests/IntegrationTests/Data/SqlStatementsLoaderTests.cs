@@ -2,7 +2,7 @@ using Domainr.EventStore.Sql.Data;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Domainr.EventStore.SqlServer.Tests.IntegrationTests.Data
+namespace Domainr.EventStore.Sql.Tests.IntegrationTests.Data
 {
     [TestFixture]
     public sealed class SqlStatementsLoaderTests

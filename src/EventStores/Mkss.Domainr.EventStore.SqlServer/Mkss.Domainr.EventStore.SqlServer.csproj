@@ -8,10 +8,24 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
-    <PackageReference Include="Mkss.Domainr.Core" Version="1.0.34" />
-    <PackageReference Include="Mkss.Domainr.EventStore.Sql" Version="1.0.9" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="System.Runtime.Caching" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\SqlScripts\GetByAggregateRootId.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\SqlScripts\Initialize.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\SqlScripts\Save.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mkss.Domainr.EventStore.Sql\Mkss.Domainr.EventStore.Sql.csproj" />
   </ItemGroup>
 
 </Project>
