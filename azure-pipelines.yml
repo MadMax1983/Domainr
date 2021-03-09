@@ -18,6 +18,7 @@ steps:
     command: 'build'
     projects: '/Mkss.Domainr.Core/Mkss.Domainr.Core.csproj'
     workingDirectory: 'src/Core'
+- task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: '/Mkss.Domainr.Core/Mkss.Domainr.Core.Tests.csproj'
