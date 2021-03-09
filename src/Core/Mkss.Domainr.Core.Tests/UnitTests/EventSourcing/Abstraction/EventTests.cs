@@ -1,7 +1,6 @@
 ﻿using System;
 using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
-using Domainr.Core.Resources;
 using Domainr.Core.Tests.TestDoubles;
 using FluentAssertions;
 using NUnit.Framework;
