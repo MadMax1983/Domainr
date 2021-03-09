@@ -33,6 +33,12 @@ steps:
     command: 'test'
     projects: 'src/Core/Mkss.Domainr.Core.Tests/Mkss.Domainr.Core.Tests.csproj'
     arguments: --configuration $(BuildConfiguration)
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/Core/Mkss.Domainr.Core/Mkss.Domainr.Core.csproj'
+    packDestination: 'src/Core/Mkss.Domainr.Core/bin/$(BuildConfiguration)/netstandard2.0'
+    versioningScheme: 'byBuildNumber'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifacts'
   inputs:
