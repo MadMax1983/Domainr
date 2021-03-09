@@ -1,6 +1,5 @@
 ﻿using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
-using Domainr.Core.Resources;
 
 namespace Domainr.Core.Domain.Model
 {

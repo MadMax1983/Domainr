@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
-using Domainr.Core.Resources;
 using Domainr.Core.Tests.TestDoubles;
 using FluentAssertions;
 using NUnit.Framework;

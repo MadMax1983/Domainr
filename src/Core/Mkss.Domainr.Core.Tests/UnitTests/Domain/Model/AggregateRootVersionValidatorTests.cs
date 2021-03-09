@@ -2,7 +2,6 @@
 using Domainr.Core.Domain.Model;
 using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
-using Domainr.Core.Resources;
 using FluentAssertions;
 using NUnit.Framework;
 

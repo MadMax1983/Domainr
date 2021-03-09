@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Domainr.Core.Domain.Model;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
-using Domainr.Core.Resources;
 
 namespace Domainr.Core.Domain.Repositories
 {
-    public abstract class Repository<TAggregateRoot, TAggregateRootId>
+    public class Repository<TAggregateRoot, TAggregateRootId>
         : IRepository<TAggregateRoot, TAggregateRootId>
         where TAggregateRoot : AggregateRoot<TAggregateRootId>, new()
         where TAggregateRootId : class, IAggregateRootId
