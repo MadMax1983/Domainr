@@ -91,6 +91,8 @@ namespace Domainr.EventStore.Sql
                 transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
                 
                 var sql = SqlStatementsLoader[nameof(SaveAsync)];
+
+                var streamId = Guid.NewGuid().ToString();
                 
                 foreach (var @event in events)
                 {
@@ -98,8 +100,8 @@ namespace Domainr.EventStore.Sql
                     {
                         Version = @event.Version,
                         AggregateRootId = @event.AggregateRootId,
-                        StreamId = Guid.NewGuid().ToString(),
-                        Timestamp = DateTime.UtcNow,
+                        StreamId = streamId,
+                        T = DateTime.UtcNow,
                         Type = @event.GetType().AssemblyQualifiedName,
                         Data = EventDataSerializer.Serialize(@event),
                         Metadata = eventMetadata

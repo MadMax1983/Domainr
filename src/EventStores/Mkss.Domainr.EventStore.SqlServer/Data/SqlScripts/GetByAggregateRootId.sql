@@ -1,7 +1,7 @@
 ﻿SELECT
-	[e].[Id],
 	[e].[Version],
 	[e].[AggregateRootId],
+	[e].[Type],
 	[e].[Data]
 FROM [EventStore].[Events] [e]
 WHERE [e].[AggregateRootId] = @AggregateRootId

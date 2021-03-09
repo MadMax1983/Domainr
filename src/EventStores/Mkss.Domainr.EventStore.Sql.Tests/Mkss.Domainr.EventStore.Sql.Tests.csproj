@@ -23,5 +23,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Mkss.Domainr.EventStore.Sql\Mkss.Domainr.EventStore.Sql.csproj" />
   </ItemGroup>
-
+  
 </Project>

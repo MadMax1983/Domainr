@@ -16,17 +16,8 @@
 
   <ItemGroup>
     <None Remove="Data\SqlScripts\GetByAggregateRootId.sql" />
-    <EmbeddedResource Include="Data\SqlScripts\GetByAggregateRootId.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Remove="Data\SqlScripts\Initialize.sql" />
-    <EmbeddedResource Include="Data\SqlScripts\Initialize.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Remove="Data\SqlScripts\Save.sql" />
-    <EmbeddedResource Include="Data\SqlScripts\Save.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
