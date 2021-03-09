@@ -17,14 +17,12 @@ steps:
   displayName: 'Run build'
   inputs:
     command: 'build'
-    projects: 'Mkss.Domainr.Core/Mkss.Domainr.Core.csproj'
-    workingDirectory: 'src/Core'
+    projects: 'src/Core/Mkss.Domainr.Core/Mkss.Domainr.Core.csproj'
 - task: DotNetCoreCLI@2
   displayName: 'Run Unit Tests'
   inputs:
     command: 'test'
-    projects: 'Mkss.Domainr.Core/Mkss.Domainr.Core.Tests.csproj'
-    workingDirectory: 'src/Core'
+    projects: 'src/Core/Mkss.Domainr.Core/Mkss.Domainr.Core.Tests.csproj'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifacts'
   inputs:
