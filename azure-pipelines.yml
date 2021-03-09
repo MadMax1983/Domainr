@@ -22,7 +22,7 @@ steps:
   displayName: 'Run Unit Tests'
   inputs:
     command: 'test'
-    projects: 'src/Core/Mkss.Domainr.Core/Mkss.Domainr.Core.Tests.csproj'
+    projects: 'src/Core/Mkss.Domainr.Core.Tests/Mkss.Domainr.Core.Tests.csproj'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifacts'
   inputs:
