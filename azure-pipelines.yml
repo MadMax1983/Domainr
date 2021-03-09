@@ -26,6 +26,6 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifacts'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    PathtoPublish: 'src/Core/Mkss.Domainr.Core/bin/$(BuildConfiguration)/netstandard2.0'
     ArtifactName: 'drop'
     publishLocation: 'Container'
