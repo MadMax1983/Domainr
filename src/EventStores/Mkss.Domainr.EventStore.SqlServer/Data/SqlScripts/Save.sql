@@ -10,7 +10,7 @@ VALUES (
     @Version,
     @AggregateRootId,
     @StreamId,
-    GETDATE(),
+    @TimeStampUtc,
     @Type,
     @Data,
     @Metadata)
