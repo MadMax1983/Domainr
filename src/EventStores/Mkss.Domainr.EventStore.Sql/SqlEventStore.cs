@@ -101,7 +101,7 @@ namespace Domainr.EventStore.Sql
                         Version = @event.Version,
                         AggregateRootId = @event.AggregateRootId,
                         StreamId = streamId,
-                        T = DateTime.UtcNow,
+                        TimeStampUtc = DateTime.UtcNow,
                         Type = @event.GetType().AssemblyQualifiedName,
                         Data = EventDataSerializer.Serialize(@event),
                         Metadata = eventMetadata
