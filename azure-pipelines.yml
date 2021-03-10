@@ -4,7 +4,15 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - src/Core/Mkss.Domainr.Core
+      - src/Core/Mkss.Domainr.Core.Tests
+    exclude:
+      - src/Core/README.md
 
 pool:
   vmImage: ubuntu-latest
