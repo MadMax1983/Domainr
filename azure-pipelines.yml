@@ -21,6 +21,7 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- script: echo '$(Build.BuildNumber)'
 - task: DotNetCoreCLI@2
   displayName: 'Run Restore'
   inputs:
