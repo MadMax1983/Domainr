@@ -46,7 +46,7 @@ steps:
     command: 'pack'
     packagesToPack: 'src/Core/Mkss.Domainr.Core/Mkss.Domainr.Core.csproj'
     packDestination: 'src/Core/Mkss.Domainr.Core/bin/$(BuildConfiguration)/netstandard2.0'
-    versioningScheme: 'byBuildNumber'
+    versioningScheme: 'off'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifacts'
   inputs:
