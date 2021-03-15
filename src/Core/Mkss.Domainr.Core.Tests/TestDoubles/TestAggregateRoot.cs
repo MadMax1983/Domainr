@@ -35,6 +35,7 @@ namespace Domainr.Core.Tests.TestDoubles
 
         private void On(TestEvent2 @event)
         {
+            Id = new TestAggregateRootId("123");
         }
 
         private void On(TestEvent4 @event)
