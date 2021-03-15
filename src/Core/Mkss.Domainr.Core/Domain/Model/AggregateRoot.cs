@@ -32,7 +32,7 @@ namespace Domainr.Core.Domain.Model
         public TId Id
         {
             get => _id;
-            private set
+            protected set
             {
                 if (_id != null)
                 {
