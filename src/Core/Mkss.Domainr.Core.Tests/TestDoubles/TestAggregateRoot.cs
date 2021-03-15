@@ -5,18 +5,17 @@ namespace Domainr.Core.Tests.TestDoubles
     internal sealed class TestAggregateRoot
         : AggregateRoot<TestAggregateRootId>
     {
-        public TestAggregateRoot()
+        private TestAggregateRoot()
         {
         }
         
-        public TestAggregateRoot(string serializedAggregateRootId)
-            : base(new TestAggregateRootId(serializedAggregateRootId))
+        public static TestAggregateRoot Create()
         {
-        }
+            var testAggregateRoot = new TestAggregateRoot();
+            
+            testAggregateRoot.ApplyChange(null);
 
-        protected override TestAggregateRootId DeserializeId(string serializedId)
-        {
-            return new TestAggregateRootId(serializedId);
+            return testAggregateRoot;
         }
 
         public void ExecuteSomeAction()
