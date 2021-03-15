@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Domainr.Core.Domain.Factories;
 using Domainr.Core.Domain.Model;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Core.Exceptions;
@@ -10,25 +11,29 @@ namespace Domainr.Core.Domain.Repositories
 {
     public class Repository<TAggregateRoot, TAggregateRootId>
         : IRepository<TAggregateRoot, TAggregateRootId>
-        where TAggregateRoot : AggregateRoot<TAggregateRootId>, new()
+        where TAggregateRoot : AggregateRoot<TAggregateRootId>, IAggregateRoot<TAggregateRootId>
         where TAggregateRootId : class, IAggregateRootId
     {
-        protected Repository(IEventStore eventStore)
+        protected Repository(IFactory<TAggregateRoot, TAggregateRootId> aggregateRootFactory, IEventStore eventStore)
         {
+            AggregateRootFactory = aggregateRootFactory;
+            
             EventStore = eventStore;
         }
 
+        protected IFactory<TAggregateRoot, TAggregateRootId> AggregateRootFactory { get; }
+        
         protected IEventStore EventStore { get; }
 
-        public virtual async Task<TAggregateRoot> GetByIdAsync(TAggregateRootId aggregateRootId, CancellationToken cancellationToken = default)
+        public virtual async Task<TAggregateRoot> GetByIdAsync(string aggregateRootId, CancellationToken cancellationToken = default)
         {
-            var eventStream = (await EventStore.GetByAggregateRootIdAsync(aggregateRootId.ToString(), Constants.INITIAL_VERSION, cancellationToken)).ToList();
+            var eventStream = await EventStore.GetByAggregateRootIdAsync(aggregateRootId, Constants.INITIAL_VERSION, cancellationToken);
             if (!eventStream.Any())
             {
                 return null;
             }
 
-            var aggregateRoot = new TAggregateRoot();
+            var aggregateRoot = AggregateRootFactory.Create();
 
             aggregateRoot.LoadFromStream(eventStream);
 
@@ -42,13 +47,7 @@ namespace Domainr.Core.Domain.Repositories
                 throw new AggregateRootNullException(nameof(aggregateRoot));
             }
 
-            var uncommittedEvents = aggregateRoot.GetUncommittedChanges();
-            if (!uncommittedEvents.Any())
-            {
-                throw new AggregateRootException($"A concurrency was found while saving aggregate root changes. Aggregate root identifier: {aggregateRoot.Id}, version: {aggregateRoot.Version}.");
-            }
-
-            var committedEvents = aggregateRoot.CommitChanges(aggregateRoot.Version);
+            var committedEvents = aggregateRoot.CommitChanges();
 
             await EventStore.SaveAsync(committedEvents, metadata, cancellationToken);
         }

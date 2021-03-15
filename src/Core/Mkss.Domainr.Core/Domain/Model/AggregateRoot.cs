@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Domainr.Core.EventSourcing.Abstraction;
@@ -9,13 +8,15 @@ using Domainr.Core.Infrastructure;
 namespace Domainr.Core.Domain.Model
 {
     public abstract class AggregateRoot<TId>
-        where TId : class, IAggregateRootId
+        : IAggregateRoot<TId> where TId : class, IAggregateRootId
     {
         private const string ON_METHOD_NAME = "On";
 
         private readonly List<Event> _changes;
 
         private List<MethodInfo> _onMethods;
+
+        private TId _id;
 
         protected AggregateRoot()
         {
@@ -28,20 +29,21 @@ namespace Domainr.Core.Domain.Model
             Version = Constants.INITIAL_VERSION;
         }
 
-        protected AggregateRoot(TId aggregateRootId)
-            : this()
+        public TId Id
         {
-            Id = aggregateRootId;
-        }
+            get => _id;
+            private set
+            {
+                if (_id != null)
+                {
+                    throw new AggregateRootIdException("Aggregate root identifier has been already initialized.");
+                }
 
-        public TId Id { get; private set; }
+                _id = value;
+            }
+        }
 
         public long Version { get; private set; }
-
-        internal IReadOnlyCollection<Event> GetUncommittedChanges()
-        {
-            return _changes.ToList();
-        }
 
         /// <summary>
         /// Restores an aggregate root state from an event stream.
@@ -57,18 +59,22 @@ namespace Domainr.Core.Domain.Model
 
             var lastEvent = orderedEventStream.Last();
 
-            Id = DeserializeId(lastEvent.AggregateRootId);
             Version = lastEvent.Version;
         }
 
-        internal IReadOnlyCollection<Event> CommitChanges(long currentAggregateRootVersion)
+        internal IReadOnlyCollection<Event> CommitChanges()
         {
-            if (!_changes.Any())
+            if (_id == null)
             {
-                return new Event[0];
+                throw new AggregateRootIdException("Aggregate root identifier has not been initialized.");
             }
 
-            var version = SetCurrentVersion(currentAggregateRootVersion);
+            if (!_changes.Any())
+            {
+                throw new AggregateRootException($"No changes were found for the aggregate root. Id: {Id}, Version: {Version}");
+            }
+
+            var version = Version;
 
             var changes = _changes.ToList();
 
@@ -80,8 +86,6 @@ namespace Domainr.Core.Domain.Model
 
             return changes;
         }
-
-        protected abstract TId DeserializeId(string serializedId);
 
         protected void ApplyChange(Event @event)
         {
@@ -149,19 +153,7 @@ namespace Domainr.Core.Domain.Model
         {
             var onMethod = _onMethods.SingleOrDefault(hm => hm.GetParameters().Single().ParameterType == @event.GetType());
 
-            try
-            {
-                onMethod?.Invoke(this, new object[] { @event });
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException == null)
-                {
-                    throw;
-                }
-
-                throw ex.InnerException;
-            }
+            onMethod.Invoke(this, new object[] { @event });
         }
 
         private long SetCurrentVersion(long currentAggregateRootVersion)
