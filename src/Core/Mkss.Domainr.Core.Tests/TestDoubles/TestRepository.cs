@@ -7,8 +7,8 @@ namespace Domainr.Core.Tests.TestDoubles
     internal sealed class TestRepository
         : Repository<TestAggregateRoot, TestAggregateRootId>
     {
-        public TestRepository(IFactory<TestAggregateRoot, TestAggregateRootId> aggregateRootFactory, IEventStore eventStore)
-            : base(aggregateRootFactory, eventStore)
+        public TestRepository(IEventStore eventStore)
+            : base(eventStore)
         {
         }
     }

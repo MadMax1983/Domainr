@@ -5,7 +5,7 @@ namespace Domainr.Core.Tests.TestDoubles
     internal sealed class TestAggregateRoot
         : AggregateRoot<TestAggregateRootId>
     {
-        private TestAggregateRoot()
+        public TestAggregateRoot()
         {
         }
         
@@ -40,6 +40,11 @@ namespace Domainr.Core.Tests.TestDoubles
 
         private void On(TestEvent4 @event)
         {
+        }
+
+        protected override TestAggregateRootId RestoreIdFromString(string serializedId)
+        {
+            return new TestAggregateRootId(serializedId);
         }
     }
 }

@@ -73,7 +73,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public async Task GIVEN_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_aggregate_root_in_its_correct_state()
         {
             // Arrange
-            var repository = new TestRepository(null, _mockEventStore.Object);
+            var repository = new TestRepository(_mockEventStore.Object);
 
             var aggregateRootId = new TestAggregateRootId(_aggregateRootIdValue);
 
@@ -97,7 +97,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public async Task GIVEN_invalid_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_null()
         {
             // Arrange
-            var repository = new TestRepository(null, _mockEventStore.Object);
+            var repository = new TestRepository(_mockEventStore.Object);
 
             var aggregateRootId = new TestAggregateRootId(Guid.Empty.ToString());
 
@@ -118,7 +118,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
             // Arrange
             const string EXPECTED_EXCEPTION_MESSAGE = "aggregateRoot";
 
-            var repository = new TestRepository(null, _mockEventStore.Object);
+            var repository = new TestRepository(_mockEventStore.Object);
 
             // Act
             Func<Task> act = async () => await repository.SaveAsync(null);
@@ -135,7 +135,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public void GIVEN_unchanged_aggregate_root_WHEN_attempting_to_save_THEN_throws_AggregateRootException()
         {
             // Arrange
-            var repository = new TestRepository(null, _mockEventStore.Object);
+            var repository = new TestRepository(_mockEventStore.Object);
 
             var aggregateRoot = TestAggregateRoot.Create();
 
@@ -155,7 +155,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public async Task GIVEN_changed_aggregate_root_WHEN_attempting_to_save_THEN_saves_aggregate_root()
         {
             // Arrange
-            var repository = new TestRepository(null, _mockEventStore.Object);
+            var repository = new TestRepository(_mockEventStore.Object);
 
             var aggregateRoot = TestAggregateRoot.Create();
 
