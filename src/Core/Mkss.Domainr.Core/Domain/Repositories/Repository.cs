@@ -11,18 +11,14 @@ namespace Domainr.Core.Domain.Repositories
 {
     public class Repository<TAggregateRoot, TAggregateRootId>
         : IRepository<TAggregateRoot, TAggregateRootId>
-        where TAggregateRoot : AggregateRoot<TAggregateRootId>, IAggregateRoot<TAggregateRootId>
+        where TAggregateRoot : AggregateRoot<TAggregateRootId>, IAggregateRoot<TAggregateRootId>, new()
         where TAggregateRootId : class, IAggregateRootId
     {
-        public Repository(IFactory<TAggregateRoot, TAggregateRootId> aggregateRootFactory, IEventStore eventStore)
+        public Repository(IEventStore eventStore)
         {
-            AggregateRootFactory = aggregateRootFactory;
-            
             EventStore = eventStore;
         }
 
-        protected IFactory<TAggregateRoot, TAggregateRootId> AggregateRootFactory { get; }
-        
         protected IEventStore EventStore { get; }
 
         public virtual async Task<TAggregateRoot> GetByIdAsync(string aggregateRootId, CancellationToken cancellationToken = default)
@@ -33,7 +29,7 @@ namespace Domainr.Core.Domain.Repositories
                 return null;
             }
 
-            var aggregateRoot = AggregateRootFactory.Create();
+            var aggregateRoot = new TAggregateRoot();
 
             aggregateRoot.LoadFromStream(eventStream);
 

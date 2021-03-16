@@ -29,6 +29,12 @@ namespace Domainr.Core.Domain.Model
             Version = Constants.INITIAL_VERSION;
         }
 
+        protected AggregateRoot(TId id)
+            : this()
+        {
+            Id = id;
+        }
+
         public TId Id
         {
             get => _id;
@@ -59,6 +65,7 @@ namespace Domainr.Core.Domain.Model
 
             var lastEvent = orderedEventStream.Last();
 
+            Id = RestoreIdFromString(lastEvent.AggregateRootId);
             Version = lastEvent.Version;
         }
 
@@ -96,6 +103,8 @@ namespace Domainr.Core.Domain.Model
 
             ApplyChange(@event, true);
         }
+
+        protected abstract TId RestoreIdFromString(string serializedId);
 
         private static void ValidateEventStream(IReadOnlyCollection<Event> eventStream)
         {
@@ -154,15 +163,6 @@ namespace Domainr.Core.Domain.Model
             var onMethod = _onMethods.SingleOrDefault(hm => hm.GetParameters().Single().ParameterType == @event.GetType());
 
             onMethod.Invoke(this, new object[] { @event });
-        }
-
-        private long SetCurrentVersion(long currentAggregateRootVersion)
-        {
-            AggregateRootVersionValidator.Validate(currentAggregateRootVersion);
-
-            return Version < currentAggregateRootVersion
-                ? currentAggregateRootVersion
-                : Version;
         }
     }
 }
