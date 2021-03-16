@@ -1,5 +1,4 @@
-﻿using Domainr.Core.Domain.Factories;
-using Domainr.Core.Domain.Repositories;
+﻿using Domainr.Core.Domain.Repositories;
 using Domainr.Core.EventSourcing.Abstraction;
 
 namespace Domainr.Core.Tests.TestDoubles
