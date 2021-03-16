@@ -14,7 +14,7 @@ namespace Domainr.Core.Domain.Repositories
         where TAggregateRoot : AggregateRoot<TAggregateRootId>, IAggregateRoot<TAggregateRootId>
         where TAggregateRootId : class, IAggregateRootId
     {
-        protected Repository(IFactory<TAggregateRoot, TAggregateRootId> aggregateRootFactory, IEventStore eventStore)
+        public Repository(IFactory<TAggregateRoot, TAggregateRootId> aggregateRootFactory, IEventStore eventStore)
         {
             AggregateRootFactory = aggregateRootFactory;
             
