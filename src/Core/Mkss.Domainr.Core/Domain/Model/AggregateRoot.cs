@@ -18,6 +18,9 @@ namespace Domainr.Core.Domain.Model
 
         private TId _id;
 
+        /// <summary>
+        /// Use this constructor only to restore aggregate root state from an event stream.
+        /// </summary>
         protected AggregateRoot()
         {
             var onMethods = GetOnMethodsFromType();
@@ -29,6 +32,10 @@ namespace Domainr.Core.Domain.Model
             Version = Constants.INITIAL_VERSION;
         }
 
+        /// <summary>
+        /// Use this constructor only to create a new aggregate root.
+        /// </summary>
+        /// <param name="id">Aggregate Root Identifier</param>
         protected AggregateRoot(TId id)
             : this()
         {

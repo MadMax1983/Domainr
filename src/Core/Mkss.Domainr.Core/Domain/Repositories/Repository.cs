@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Domainr.Core.Domain.Factories;
 using Domainr.Core.Domain.Model;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Core.Exceptions;
