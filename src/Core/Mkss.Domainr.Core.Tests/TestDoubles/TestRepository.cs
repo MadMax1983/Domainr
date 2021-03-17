@@ -1,13 +1,14 @@
-﻿using Domainr.Core.Domain.Repositories;
+﻿using Domainr.Core.Domain.Factories;
+using Domainr.Core.Domain.Repositories;
 using Domainr.Core.EventSourcing.Abstraction;
 
 namespace Domainr.Core.Tests.TestDoubles
 {
     internal sealed class TestRepository
-        : Repository<TestAggregateRoot, TestAggregateRootId>
+        : Repository<ITestAggregateRoot, TestAggregateRootId>
     {
-        public TestRepository(IEventStore eventStore)
-            : base(eventStore)
+        public TestRepository(IAggregateRootFactory<ITestAggregateRoot, TestAggregateRootId> factory, IEventStore eventStore)
+            : base(factory, eventStore)
         {
         }
     }
