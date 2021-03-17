@@ -10,7 +10,7 @@ namespace Domainr.Core.Domain.Repositories
 {
     public class Repository<TAggregateRoot, TAggregateRootId>
         : IRepository<TAggregateRoot, TAggregateRootId>
-        where TAggregateRoot : AggregateRoot<TAggregateRootId>, IAggregateRoot<TAggregateRootId>, new()
+        where TAggregateRoot : class, IAggregateRoot<TAggregateRootId>, new()
         where TAggregateRootId : class, IAggregateRootId
     {
         public Repository(IEventStore eventStore)

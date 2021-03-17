@@ -68,7 +68,7 @@ namespace Domainr.Core.Domain.Model
         /// Restores an aggregate root state from an event stream.
         /// </summary>
         /// <param name="eventStream">An aggregate root event stream.</param>
-        internal void LoadFromStream(IReadOnlyCollection<Event> eventStream)
+        public void LoadFromStream(IReadOnlyCollection<Event> eventStream)
         {
             ValidateEventStream(eventStream);
 
@@ -82,12 +82,12 @@ namespace Domainr.Core.Domain.Model
             Version = lastEvent.Version;
         }
 
-        internal IReadOnlyCollection<Event> GetUncommittedChanges()
+        public IReadOnlyCollection<Event> GetUncommittedChanges()
         {
             return _changes;
         }
 
-        internal void CommitChanges()
+        public void CommitChanges()
         {
             if (_id == null)
             {
