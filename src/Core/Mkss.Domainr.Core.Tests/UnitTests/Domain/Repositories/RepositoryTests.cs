@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Domainr.Core.Domain.Factories;
 using Domainr.Core.EventSourcing.Abstraction;
 using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
@@ -21,11 +22,20 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
 
         private readonly ICollection<Event> _events = new List<Event>();
 
+        private readonly Mock<ITestAggregateRoot> _mockAggregateRoot = new Mock<ITestAggregateRoot>();
+        private readonly Mock<IAggregateRootFactory<ITestAggregateRoot, TestAggregateRootId>> _mockFactory = new Mock<IAggregateRootFactory<ITestAggregateRoot, TestAggregateRootId>>();
         private readonly Mock<IEventStore> _mockEventStore = new Mock<IEventStore>();
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            _mockAggregateRoot.SetupGet(m => m.Id)
+                .Returns(new TestAggregateRootId("AggregateRootId"));
+
+            _mockFactory
+                .Setup(m => m.Create())
+                .Returns(() => _mockAggregateRoot.Object);
+
             _mockEventStore.Setup(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
                     (string aggregateRootId, long fromVersion, CancellationToken cancellationToken) => _events
@@ -71,33 +81,25 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public async Task GIVEN_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_aggregate_root_in_its_correct_state()
         {
             // Arrange
-            var repository = new TestRepository(_mockEventStore.Object);
+            var repository = new TestRepository(_mockFactory.Object, _mockEventStore.Object);
 
             // Act
             var aggregateRoot = await repository.GetByIdAsync(_aggregateRootIdValue);
 
             // Assert
-            aggregateRoot.Id.ToString()
-                .Should()
-                .Be(_aggregateRootIdValue);
-
-            aggregateRoot.Version
-                .Should()
-                .Be(_events.Max(e => e.Version));
-
             _mockEventStore.Verify(m => m.GetByAggregateRootIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once());
+            _mockFactory.Verify(m => m.Create(), Times.Once());
+            _mockAggregateRoot.Verify(m => m.LoadFromStream(It.IsAny<IReadOnlyCollection<Event>>()), Times.Once());
         }
 
         [Test]
         public async Task GIVEN_invalid_aggregate_root_identifier_WHEN_getting_aggregate_root_THEN_returns_null()
         {
             // Arrange
-            var repository = new TestRepository(_mockEventStore.Object);
-
-            var aggregateRootId = new TestAggregateRootId(Guid.Empty.ToString());
+            var repository = new TestRepository(_mockFactory.Object, _mockEventStore.Object);
 
             // Act
-            var aggregateRoot = await repository.GetByIdAsync(aggregateRootId.ToString());
+            var aggregateRoot = await repository.GetByIdAsync(Guid.Empty.ToString());
 
             // Assert
             aggregateRoot
@@ -111,7 +113,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public void GIVEN_no_aggregate_root_WHEN_attempting_to_save_THEN_throws_AggregateRootNullException()
         {
             // Arrange
-            var repository = new TestRepository(_mockEventStore.Object);
+            var repository = new TestRepository(_mockFactory.Object, _mockEventStore.Object);
 
             // Act
             Func<Task> act = async () => await repository.SaveAsync(null);
@@ -127,7 +129,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public void GIVEN_unchanged_aggregate_root_WHEN_attempting_to_save_THEN_does_not_throw_any_exception()
         {
             // Arrange
-            var repository = new TestRepository(_mockEventStore.Object);
+            var repository = new TestRepository(_mockFactory.Object, _mockEventStore.Object);
 
             var aggregateRoot = new TestAggregateRoot();
 
@@ -148,7 +150,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Repositories
         public async Task GIVEN_changed_aggregate_root_WHEN_attempting_to_save_THEN_saves_aggregate_root(string serializedAggregateRootId)
         {
             // Arrange
-            var repository = new TestRepository(_mockEventStore.Object);
+            var repository = new TestRepository(_mockFactory.Object, _mockEventStore.Object);
 
             var aggregateRootId = new TestAggregateRootId(serializedAggregateRootId);
             var aggregateRoot = new TestAggregateRoot(aggregateRootId);

@@ -3,7 +3,7 @@
 namespace Domainr.Core.Tests.TestDoubles
 {
     internal sealed class TestAggregateRoot
-        : AggregateRoot<TestAggregateRootId>
+        : AggregateRoot<TestAggregateRootId>, ITestAggregateRoot
     {
         public TestAggregateRoot()
         {
