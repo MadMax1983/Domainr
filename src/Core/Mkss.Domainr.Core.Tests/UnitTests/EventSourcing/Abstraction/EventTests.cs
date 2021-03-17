@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoFixture.NUnit3;
 using Domainr.Core.Exceptions;
 using Domainr.Core.Infrastructure;
 using Domainr.Core.Tests.TestDoubles;
@@ -10,34 +11,17 @@ namespace Domainr.Core.Tests.UnitTests.EventSourcing.Abstraction
     [TestFixture]
     public sealed class EventTests
     {
-        private const string AGGREGATE_ROOT_ID = "aggregateRootId";
-
         [Test]
-        public void GIVEN_aggregate_root_identifier_WHEN_creating_an_event_THEN_initializes_event_with_given_aggregate_root_identifier_AND_initial_version()
+        [AutoData]
+        public void GIVEN_aggregate_root_id_WHEN_creating_an_event_THEN_initializes_event_with_given_aggregate_root_id_AND_initial_version(string aggregateRootId)
         {
             // Act
-            var @event = new TestEvent1(AGGREGATE_ROOT_ID, true);
+            var @event = new BehaviorExecuted(aggregateRootId);
 
             // Assert
             @event.AggregateRootId
                 .Should()
-                .BeEquivalentTo(AGGREGATE_ROOT_ID);
-
-            @event.Version
-                .Should()
-                .Be(Constants.INITIAL_VERSION);
-        }
-
-        [Test]
-        public void GIVEN_no_aggregate_root_data_WHEN_creating_event_instance_for_deserialization_THEN_initializes_event_with_null_aggregate_root_identifier_AND_initial_event_version()
-        {
-            // Act
-            var @event = new TestEvent1();
-
-            // Assert
-            @event.AggregateRootId
-                .Should()
-                .BeNullOrWhiteSpace();
+                .BeEquivalentTo(aggregateRootId);
 
             @event.Version
                 .Should()
@@ -47,19 +31,19 @@ namespace Domainr.Core.Tests.UnitTests.EventSourcing.Abstraction
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
-        public void GIVEN_empty_aggregate_root_identifier_WHEN_creating_event_THEN_throws_AggregateRootException(string aggregateRootId)
+        public void GIVEN_empty_aggregate_root_id_WHEN_creating_event_THEN_throws_AggregateRootException(string aggregateRootId)
         {
             // Act
-            Action action = () => new TestEvent1(aggregateRootId, true);
+            Action act = () => new BehaviorExecuted(aggregateRootId);
 
             // Assert
-            action
-                .Should()
-                .Throw<AggregateRootIdException>();
+            act.Should()
+               .Throw<AggregateRootIdException>();
         }
 
         [Test]
-        public void GIVEN_aggregate_root_version_WHEN_incrementing_event_version_THEN_increments_aggregate_root_version()
+        [AutoData]
+        public void GIVEN_aggregate_root_version_WHEN_incrementing_event_version_THEN_increments_aggregate_root_version(string aggregateRootId)
         {
             // Arrange
             var aggregateRootVersion = Constants.INITIAL_VERSION;
@@ -67,7 +51,7 @@ namespace Domainr.Core.Tests.UnitTests.EventSourcing.Abstraction
             const long EXPECTED_AGGREGATE_ROOT_VERSION = Constants.INITIAL_VERSION + 1;
 
             // Act
-            var @event = new TestEvent1(AGGREGATE_ROOT_ID, true);
+            var @event = new BehaviorExecuted(aggregateRootId);
 
             @event.IncrementVersion(ref aggregateRootVersion);
 
@@ -82,13 +66,14 @@ namespace Domainr.Core.Tests.UnitTests.EventSourcing.Abstraction
         }
 
         [Test]
-        public void GIVEN_invalid_aggregate_root_version_WHEN_incrementing_event_version_THEN_throws_AggregateRootException()
+        [AutoData]
+        public void GIVEN_invalid_aggregate_root_version_WHEN_incrementing_event_version_THEN_throws_AggregateRootException(string aggregateRootId)
         {
             // Arrange
             long aggregateRootVersion = -2;
 
             // Act
-            var @event = new TestEvent1(AGGREGATE_ROOT_ID, true);
+            var @event = new BehaviorExecuted(aggregateRootId);
 
             var action = @event.Invoking(_ => @event.IncrementVersion(ref aggregateRootVersion));
 

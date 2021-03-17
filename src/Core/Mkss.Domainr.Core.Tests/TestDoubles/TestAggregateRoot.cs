@@ -9,40 +9,33 @@ namespace Domainr.Core.Tests.TestDoubles
         {
         }
         
-        public static TestAggregateRoot Create()
+        public TestAggregateRoot(TestAggregateRootId id)
+            : base(id)
         {
-            var testAggregateRoot = new TestAggregateRoot();
-            
-            return testAggregateRoot;
         }
 
-        public void ExecuteSomeAction()
+        public void SetId(string id)
         {
-            ApplyChange(new TestEvent2(Id.ToString()));
+            Id = new TestAggregateRootId(id);
         }
 
-        public void DoSomethingUnhandled()
+        public void ExecuteBehavior()
         {
-            ApplyChange(new TestEvent3(Id.ToString()));
+            ApplyChange(new BehaviorExecuted(Id.ToString()));
         }
 
-        public void ExecuteAnotherAction()
+        public void ExecuteUnhandledBehavior()
         {
-            ApplyChange(new TestEvent4(Id.ToString()));
-        }
-
-        private void On(TestEvent2 @event)
-        {
-            Id = new TestAggregateRootId("123");
-        }
-
-        private void On(TestEvent4 @event)
-        {
+            ApplyChange(new UnhandledBehaviorExecuted(Id.ToString()));
         }
 
         protected override TestAggregateRootId RestoreIdFromString(string serializedId)
         {
             return new TestAggregateRootId(serializedId);
+        }
+
+        private void On(BehaviorExecuted @event)
+        {
         }
     }
 }
