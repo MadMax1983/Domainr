@@ -15,7 +15,7 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
         private const string AGGREGATE_ROOT_ID = "aggregateRootId";
 
         [Test]
-        public void GIVEN_serialized_aggregate_root_id_WHEN_instantiating_aggregate_root_THEN_initializes_aggregate_root_with_id_AND_initial_version()
+        public void GIVEN_serialized_aggregate_root_id_WHEN_instantiating_aggregate_root_THEN_initializes_aggregate_root_with_provided_id_AND_initial_version()
         {
             // Act
             var aggregateRoot = TestAggregateRoot.Create();
@@ -159,7 +159,8 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             aggregateRoot.ExecuteSomeAction();
 
             // Assert
-            var changesToSave = aggregateRoot.CommitChanges().ToArray();
+            var changesToSave = aggregateRoot.GetUncommittedChanges().ToArray();
+            aggregateRoot.CommitChanges();
 
             for (var i = 0; i < changesToSave.Length; i++)
             {
@@ -196,7 +197,8 @@ namespace Domainr.Core.Tests.UnitTests.Domain.Model
             aggregateRoot.ExecuteSomeAction();
 
             // Assert
-            var changesToSave = aggregateRoot.CommitChanges().ToArray();
+            var changesToSave = aggregateRoot.GetUncommittedChanges().ToArray();
+            aggregateRoot.CommitChanges();
 
             for (var i = 0; i < changesToSave.Length; i++)
             {

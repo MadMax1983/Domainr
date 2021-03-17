@@ -42,9 +42,15 @@ namespace Domainr.Core.Domain.Repositories
                 throw new AggregateRootNullException(nameof(aggregateRoot));
             }
 
-            var committedEvents = aggregateRoot.CommitChanges();
+            var changesToSave = aggregateRoot.GetUncommittedChanges();
+            if (!changesToSave.Any())
+            {
+                return;
+            }
 
-            await EventStore.SaveAsync(committedEvents, metadata, cancellationToken);
+            aggregateRoot.CommitChanges();
+
+            await EventStore.SaveAsync(changesToSave, metadata, cancellationToken);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Domainr.Core.EventSourcing.Abstraction;
@@ -52,6 +53,11 @@ namespace Domainr.Core.Domain.Model
                     throw new AggregateRootIdException("Aggregate root identifier has been already initialized.");
                 }
 
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 _id = value;
             }
         }
@@ -76,29 +82,25 @@ namespace Domainr.Core.Domain.Model
             Version = lastEvent.Version;
         }
 
-        internal IReadOnlyCollection<Event> CommitChanges()
+        internal IReadOnlyCollection<Event> GetUncommittedChanges()
+        {
+            return _changes;
+        }
+
+        internal void CommitChanges()
         {
             if (_id == null)
             {
                 throw new AggregateRootIdException("Aggregate root identifier has not been initialized.");
             }
 
-            if (!_changes.Any())
-            {
-                throw new AggregateRootException($"No changes were found for the aggregate root. Id: {Id}, Version: {Version}");
-            }
-
             var version = Version;
 
-            var changes = _changes.ToList();
-
-            changes.ForEach(e => e.IncrementVersion(ref version));
+            _changes.ForEach(e => e.IncrementVersion(ref version));
 
             Version = version;
 
             _changes.Clear();
-
-            return changes;
         }
 
         protected void ApplyChange(Event @event)

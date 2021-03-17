@@ -13,8 +13,6 @@ namespace Domainr.Core.Tests.TestDoubles
         {
             var testAggregateRoot = new TestAggregateRoot();
             
-            testAggregateRoot.ApplyChange(null);
-
             return testAggregateRoot;
         }
 
