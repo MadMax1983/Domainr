@@ -84,7 +84,7 @@ namespace Domainr.Core.Domain.Model
 
         public IReadOnlyCollection<Event> GetUncommittedChanges()
         {
-            return _changes;
+            return _changes.ToList();
         }
 
         public void CommitChanges()
